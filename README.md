@@ -33,11 +33,8 @@ An app that generate a random adventure when the user types in a city and select
 
 
 ## Objectives 
-- Code up a MVP(Mininum Viable Product) of a Routr App for remote workers
-- Take Hi-Fi specifications and translate to Xcode app.
-- Collaboration with coders and designers to bring our Hi-Fi prototype to life.
-- Test UI and UX through documentation.
-- Test code to find any inconsistencies.
+- Code up a MVP(Mininum Viable Product) of a Random Adventure App
+-Intergate Dynamic text and darkmode schemes.
 - Submit Project to TestFlight for UserFeedback and make changes accordingly.
 
 ## Color Reference
