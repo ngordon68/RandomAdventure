@@ -93,7 +93,7 @@ Swift, Swift UI, XCode, Figma, Sketch, YELP API, SwiftCharts, Combine
  #Privacy Policy
     
     
-    Thank you for using our iOS application. This Privacy Policy describes how we collect, use, and share information about you when you use our application.
+Thank you for using our iOS application. This Privacy Policy describes how we collect, use, and share information about you when you use our application.
 
 Information We Collect
 We may collect information about you when you use our application, such as your name, email address, device information, and usage data. We may also collect information from third-party services such as Google Analytics.
