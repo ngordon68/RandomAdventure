@@ -119,3 +119,8 @@ This iOS application and its contents are protected by copyright law. Any unauth
 The names, logos, and other graphics and content used in this application are trademarks or registered trademarks of Random Adventure. Unauthorized use or reproduction of these trademarks or any other intellectual property owned by [company name] is strictly prohibited.
 By using this application, you acknowledge that you have read and agree to the terms and conditions of the End User License Agreement (EULA) and Privacy Policy, which are available within the application. Any violation of these terms and conditions may result in legal action.  
     
+# Support
+    
+ Any questions please contact
+ Email: ngordon688@gmail.com
+ Phone: 313-523-5835
