@@ -43,7 +43,6 @@ struct ContentView: View {
                             .foregroundColor(.primary)
                             .minimumScaleFactor(0.5)
                             
-                    
                             TextField("MUST TYPE LOCATION", text: $vm.searchTerm)
                                 .padding()
                                 .background(Color.gray.opacity(20))
