@@ -85,7 +85,7 @@ An app that generate a random adventure when the user types in a city and select
   <tr>
    <table>   
     
- #Privacy Policy
+ # Privacy Policy
     
     
 Thank you for using our iOS application. This Privacy Policy describes how we collect, use, and share information about you when you use our application.
@@ -112,7 +112,7 @@ Contact Us
 If you have any questions or concerns about our Privacy Policy, please contact us at ngordon688gmail.com.
     
     
-#CopyRight
+# CopyRight
     
 Copyright © 2024 Random Adventure. All rights reserved.
 This iOS application and its contents are protected by copyright law. Any unauthorized use, reproduction or distribution of this application or its contents, in whole or in part, is strictly prohibited. This includes, but is not limited to, copying, modifying, distributing, displaying, transmitting, or using any content within the application without the written permission of Random Adventure.
