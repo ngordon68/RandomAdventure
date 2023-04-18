@@ -48,20 +48,16 @@ An app that generate a random adventure when the user types in a city and select
 
 
 
-
-## 🛠 Skills
-Swift, Swift UI, XCode, Figma, Sketch, YELP API, SwiftCharts, Combine
-
-
-
 # 02 Coding Topics
 
+- SwiftUI
 - Classes
 - State Objects/Observable Object
 - Randomizer
 - Yelp API Intergation
 - Array Appending
 - Maps Integration
+- Combine
 - Accessibility 
 
 # 03 Project Timeline
