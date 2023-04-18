@@ -21,9 +21,7 @@ An app that generate a random adventure when the user types in a city and select
   
   <td>
    
- <img width="290" alt="Screen Shot 2023-02-19 at 3 08 17 PM" src="https://user-images.githubusercontent.com/124601363/219972589-c770946f-b243-4135-81a8-61e6af5f70c8.png">
-
-
+ <img width="290" alt="Screen Shot 2023-02-19 at 3 08 17 PM" src="https://user-images.githubusercontent.com/102773701/232912050-90cec049-a3f1-4ccd-89e9-b5cd5ede06e2.png">
  
   <td>
   <tr>
