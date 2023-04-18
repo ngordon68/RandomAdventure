@@ -10,7 +10,9 @@ An app that generate a random adventure when the user types in a city and select
 
 
 ## 
-<img width="300px; height: 500px;" alt="Screen Shot 2023-02-16 at 11 50 11 AM" src="https://user-images.githubusercontent.com/124601363/219433319-6f2c39df-5b1c-45aa-a61e-9c4a8dc71baa.png">
+
+<img width="300px; height: 500px;" alt="Screen Shot 2023-02-16 at 11 50 11 AM" src="https://user-images.githubusercontent.com/102773701/232911724-daf14083-5609-4414-be9d-24a098415eaa.png">
+
 
 <table>
  <tr>
