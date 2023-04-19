@@ -116,7 +116,7 @@ If you have any questions or concerns about our Privacy Policy, please contact u
     
 Copyright © 2024 Random Adventure. All rights reserved.
 This iOS application and its contents are protected by copyright law. Any unauthorized use, reproduction or distribution of this application or its contents, in whole or in part, is strictly prohibited. This includes, but is not limited to, copying, modifying, distributing, displaying, transmitting, or using any content within the application without the written permission of Random Adventure.
-The names, logos, and other graphics and content used in this application are trademarks or registered trademarks of Random Adventure. Unauthorized use or reproduction of these trademarks or any other intellectual property owned by [company name] is strictly prohibited.
+The names, logos, and other graphics and content used in this application are trademarks or registered trademarks of Random Adventure. Unauthorized use or reproduction of these trademarks or any other intellectual property owned by Random Adventure is strictly prohibited.
 By using this application, you acknowledge that you have read and agree to the terms and conditions of the End User License Agreement (EULA) and Privacy Policy, which are available within the application. Any violation of these terms and conditions may result in legal action.  
     
 # Support
