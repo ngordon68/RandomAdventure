@@ -12,7 +12,7 @@ import SwiftUI
 struct RandomAdventureApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MapView(listOfAdventures: [])
         }
     }
 }
