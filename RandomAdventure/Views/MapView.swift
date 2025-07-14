@@ -172,19 +172,22 @@ struct MapView: View {
 
                     } else {
                         locationResults
+                       
                     }
                 }
             }
         }
         .searchable(text: $locationSearchServices.query, prompt: Text("City name"))
         .searchFocused($isFocused)
-        .focused($isFocused)
+        //.focused($isFocused)
         .onSubmit(of: .search) {
             getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
                 search(for: searchCategory.rawValue, coordinates: coordinates)
             }
-            dismissSearch()
             isFocused = false
+            dismissSearch()
+            print("search dismissed")
+           
         }
     }
     

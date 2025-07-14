@@ -13,7 +13,18 @@
 		8EFE25EC2CE9296200B46B44 /* AppIntentsFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EFE25EB2CE9296200B46B44 /* AppIntentsFile.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		8E3413452E25614700BA6683 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8E9911FF29D0CF2800BAA8B4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8E99120629D0CF2800BAA8B4;
+			remoteInfo = RandomAdventure;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		8E3413412E25614700BA6683 /* RandomAdventureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RandomAdventureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E99120729D0CF2800BAA8B4 /* RandomAdventure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RandomAdventure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E99120A29D0CF2800BAA8B4 /* RandomAdventureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomAdventureApp.swift; sourceTree = "<group>"; };
 		8E99120E29D0CF2900BAA8B4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -22,12 +33,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8E3413422E25614700BA6683 /* RandomAdventureTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RandomAdventureTests; sourceTree = "<group>"; };
 		8EC0D7B92D00900100051DA3 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 		8EC0D7BB2D00901200051DA3 /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
 		8EC0D7BC2D00903200051DA3 /* Manager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Manager; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8E34133E2E25614700BA6683 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8E99120429D0CF2800BAA8B4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -42,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				8E99120929D0CF2800BAA8B4 /* RandomAdventure */,
+				8E3413422E25614700BA6683 /* RandomAdventureTests */,
 				8E99120829D0CF2800BAA8B4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				8E99120729D0CF2800BAA8B4 /* RandomAdventure.app */,
+				8E3413412E25614700BA6683 /* RandomAdventureTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,6 +100,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8E3413402E25614700BA6683 /* RandomAdventureTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8E3413472E25614700BA6683 /* Build configuration list for PBXNativeTarget "RandomAdventureTests" */;
+			buildPhases = (
+				8E34133D2E25614700BA6683 /* Sources */,
+				8E34133E2E25614700BA6683 /* Frameworks */,
+				8E34133F2E25614700BA6683 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8E3413462E25614700BA6683 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8E3413422E25614700BA6683 /* RandomAdventureTests */,
+			);
+			name = RandomAdventureTests;
+			packageProductDependencies = (
+			);
+			productName = RandomAdventureTests;
+			productReference = 8E3413412E25614700BA6683 /* RandomAdventureTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8E99120629D0CF2800BAA8B4 /* RandomAdventure */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8E99121529D0CF2900BAA8B4 /* Build configuration list for PBXNativeTarget "RandomAdventure" */;
@@ -108,9 +152,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1420;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
+					8E3413402E25614700BA6683 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 8E99120629D0CF2800BAA8B4;
+					};
 					8E99120629D0CF2800BAA8B4 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -130,11 +178,19 @@
 			projectRoot = "";
 			targets = (
 				8E99120629D0CF2800BAA8B4 /* RandomAdventure */,
+				8E3413402E25614700BA6683 /* RandomAdventureTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8E34133F2E25614700BA6683 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8E99120529D0CF2800BAA8B4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -147,6 +203,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8E34133D2E25614700BA6683 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8E99120329D0CF2800BAA8B4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -158,7 +221,62 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		8E3413462E25614700BA6683 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8E99120629D0CF2800BAA8B4 /* RandomAdventure */;
+			targetProxy = 8E3413452E25614700BA6683 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		8E3413482E25614700BA6683 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6FP5LT63NT;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.RandomAdventureTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RandomAdventure.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RandomAdventure";
+			};
+			name = Debug;
+		};
+		8E3413492E25614700BA6683 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6FP5LT63NT;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.RandomAdventureTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RandomAdventure.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RandomAdventure";
+			};
+			name = Release;
+		};
 		8E99121329D0CF2900BAA8B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -344,6 +462,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8E3413472E25614700BA6683 /* Build configuration list for PBXNativeTarget "RandomAdventureTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E3413482E25614700BA6683 /* Debug */,
+				8E3413492E25614700BA6683 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8E99120229D0CF2800BAA8B4 /* Build configuration list for PBXProject "RandomAdventure" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
