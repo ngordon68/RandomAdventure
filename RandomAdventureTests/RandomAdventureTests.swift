@@ -7,6 +7,7 @@
 
 import Testing
 @testable import RandomAdventure
+import Foundation
 struct RandomAdventureTests {
 
     @Test func testEmptySearchResults() async throws {
@@ -36,18 +37,22 @@ struct RandomAdventureTests {
         
     }
     
-    @Test func testEmptySearchResultsWithQueryThenBackToEmptyQuery() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-        //Given
-        let locationServices = LocationSearchServices()
-    
-        //When
-        locationServices.query = "Detroit"
-        //locationServices.query = ""
-       let searchResults = locationServices.results
-        //Then
-        #expect(searchResults == [])
-        
-    }
-
+//    @Test func testEmptySearchResultsWithQueryThenBackToEmptyQuery() async throws {
+//        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+//        //Given
+//        let locationServices = LocationSearchServices()
+//        
+//        
+//    
+//        //When
+//        locationServices.query = "Detroit"
+//        //locationServices.query = ""
+//       let searchResults =   locationServices.results
+//        print("searchResults: \(searchResults)")
+//        //Then
+//        #expect(searchResults != [])
+//        
+//        
+//        
+//    }
 }

@@ -5,7 +5,10 @@ import MapKit
 
     var query: String = "" {
         didSet {
+            guard oldValue != query else { return }
+            print("query empty: \(query.isEmpty)")
             handleSearchFragement(query)
+        
         }
     }
     
@@ -32,7 +35,6 @@ import MapKit
             status = .idle
             return
         }
-        
         status = .searching
         completer.queryFragment = query
     }
