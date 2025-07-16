@@ -10,7 +10,6 @@
 		8E99120B29D0CF2800BAA8B4 /* RandomAdventureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E99120A29D0CF2800BAA8B4 /* RandomAdventureApp.swift */; };
 		8E99120F29D0CF2900BAA8B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E99120E29D0CF2900BAA8B4 /* Assets.xcassets */; };
 		8E99121229D0CF2900BAA8B4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E99121129D0CF2900BAA8B4 /* Preview Assets.xcassets */; };
-		8EFE25EC2CE9296200B46B44 /* AppIntentsFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EFE25EB2CE9296200B46B44 /* AppIntentsFile.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,7 +28,6 @@
 		8E99120A29D0CF2800BAA8B4 /* RandomAdventureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomAdventureApp.swift; sourceTree = "<group>"; };
 		8E99120E29D0CF2900BAA8B4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E99121129D0CF2900BAA8B4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		8EFE25EB2CE9296200B46B44 /* AppIntentsFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsFile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,7 +77,6 @@
 			isa = PBXGroup;
 			children = (
 				8E99120A29D0CF2800BAA8B4 /* RandomAdventureApp.swift */,
-				8EFE25EB2CE9296200B46B44 /* AppIntentsFile.swift */,
 				8EC0D7BC2D00903200051DA3 /* Manager */,
 				8EC0D7BB2D00901200051DA3 /* Views */,
 				8EC0D7B92D00900100051DA3 /* Models */,
@@ -214,7 +211,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EFE25EC2CE9296200B46B44 /* AppIntentsFile.swift in Sources */,
 				8E99120B29D0CF2800BAA8B4 /* RandomAdventureApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
