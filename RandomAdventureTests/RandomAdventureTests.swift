@@ -36,7 +36,7 @@ struct RandomAdventureTests {
         #expect(searchResults == [])
         
     }
-    
+//    
 //    @Test func testEmptySearchResultsWithQueryThenBackToEmptyQuery() async throws {
 //        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
 //        //Given
@@ -46,7 +46,7 @@ struct RandomAdventureTests {
 //    
 //        //When
 //        locationServices.query = "Detroit"
-//        //locationServices.query = ""
+//      //  locationServices.query = ""
 //       let searchResults =   locationServices.results
 //        print("searchResults: \(searchResults)")
 //        //Then

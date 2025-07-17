@@ -13,18 +13,16 @@ import MapKit
 
 struct MapView: View {
 
-    @State var searchCategory:AdventureEnum = .bars
-    @State var userLocation = ""
-    @State var listOfAdventures: [MKMapItem]
+    @State private var searchCategory:AdventureEnum = .bars
+    @State private var userLocation = ""
+    @State  var listOfAdventures: [MKMapItem]
     @State private var selection: MKMapItem?
-    @State var currentPlace: MKMapItem?
-    @State var isShowingNoInternetAlert: Bool = false
+    @State private var currentPlace: MKMapItem?
+    @State private var  isShowingNoInternetAlert: Bool = false
     @FocusState private var isFocused: Bool
-    @State var locationSearchServices = LocationSearchServices()
+    @State private var locationSearchServices = LocationSearchServices()
     @Environment(\.dismissSearch) var dismissSearch
   
-    
-    
     @State var cameraPosition: MapCameraPosition = .camera(
         MapCamera(
             centerCoordinate: CLLocationCoordinate2D(latitude: 42.3317, longitude: -83.0471),
@@ -92,6 +90,7 @@ struct MapView: View {
                 Color(.primary)
                     .ignoresSafeArea()
                 VStack {
+                  
                     if !isFocused  {
                         GroupBox {
                             HStack {
@@ -132,8 +131,6 @@ struct MapView: View {
                             Text("Select a genre to start your adventure!")
                                 .font(.title)
                                 .minimumScaleFactor(0.5)
-                            
-                            
                         }
                         
                         if listOfAdventures.count > 0 {
@@ -179,14 +176,19 @@ struct MapView: View {
         }
         .searchable(text: $locationSearchServices.query, prompt: Text("City name"))
         .searchFocused($isFocused)
-        //.focused($isFocused)
         .onSubmit(of: .search) {
+            isFocused = false
+           
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
                 search(for: searchCategory.rawValue, coordinates: coordinates)
             }
-            isFocused = false
-            dismissSearch()
-            print("search dismissed")
+            
+                dismissSearch()
+                print("is focused should be \(isFocused.description)")
+                print("search dismissed")
+
+              }
            
         }
     }
@@ -197,6 +199,20 @@ struct MapView: View {
             Button {
             
                 locationSearchServices.query = location.title
+                isFocused = false
+               
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
+                    search(for: searchCategory.rawValue, coordinates: coordinates)
+                }
+                
+       
+              
+                      dismissSearch()
+                    print("is focused should be \(isFocused.description)")
+                    print("search dismissed")
+
+                  }
 
             } label: {
                 VStack(alignment: .leading) {
@@ -209,6 +225,7 @@ struct MapView: View {
         
         .scrollContentBackground(.hidden)
     }
+
 }
 
 #Preview {

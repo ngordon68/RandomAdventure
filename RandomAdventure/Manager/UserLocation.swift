@@ -8,12 +8,11 @@ import MapKit
             guard oldValue != query else { return }
             print("query empty: \(query.isEmpty)")
             handleSearchFragement(query)
-        
         }
     }
     
     var results: [LocationResult] = []
-    var status: SearchStatus = .idle
+   // var status: SearchStatus = .idle
     var completer: MKLocalSearchCompleter
     
     init(filter: MKPointOfInterestFilter = .excludingAll,
@@ -32,10 +31,10 @@ import MapKit
     private func handleSearchFragement(_ query: String) {
         guard !query.isEmpty else {
             results.removeAll()
-            status = .idle
+         //   status = .idle
             return
         }
-        status = .searching
+      //  status = .searching
         completer.queryFragment = query
     }
 }
@@ -47,16 +46,18 @@ extension LocationSearchServices: MKLocalSearchCompleterDelegate {
         self.results = completer.results.map ({ result in
             LocationResult(title: result.title, subtitle: result.subtitle)
         })
-        self.status = .results
+     //   self.status = .results
     }
+
+
+
+
+
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        self.status = .error(error.localizedDescription)
+   //     self.status = .error(error.localizedDescription)
     }
 }
-
-
-
 
 enum SearchStatus: Equatable {
     case idle
