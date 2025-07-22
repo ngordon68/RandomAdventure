@@ -59,27 +59,31 @@ struct MapView: View {
                                         
                                     }
                                 }
-                                .accentColor(Color(.accent))
+                              //  .accentColor(Color(.accent))
                             }
                         }
                         .backgroundStyle(Color(.secondary))
+                        .padding(.top, 10)
+                        
                         
                         Button {
                             getCoordinate(addressString: userLocation) { coordinates, Error in
                                 search(for: searchCategory.rawValue, coordinates: coordinates)
                             }
                         } label: {
-                            Rectangle()
-                                .frame(height: UIScreen.main.bounds.width * 0.15)
-                                .frame(width: UIScreen.main.bounds.width * 0.45)
+                            Text("Find Adventure")
+                                .font(.headline)
+                                .foregroundColor(Color(.accent))
+                                .frame(width: UIScreen.main.bounds.width * 0.45, height: UIScreen.main.bounds.width * 0.15)
+                                .background(Color(.secondary))
                                 .cornerRadius(20)
-                                .foregroundColor(Color(.secondary))
-                                .overlay {
-                                    Text("Find Adventure")
-                                        .foregroundColor(Color(.accent))
-                                        .tag(Color.red)
-                                }
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(Color.white.opacity(0.7), lineWidth: 5)
+                                )
+                                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 3)
                         }
+
                         .padding()
                         
                         if listOfAdventures.isEmpty {
@@ -87,12 +91,14 @@ struct MapView: View {
                             Text("Select a genre to start your adventure!")
                                 .font(.title)
                                 .minimumScaleFactor(0.5)
+                                .multilineTextAlignment(.center)
                         }
                         
                         if listOfAdventures.count > 0 {
                             Text("Your adventure is to \n \(currentPlace?.placemark.name ?? "")!")
                                 .font(.title)
                                 .minimumScaleFactor(0.5)
+                                .multilineTextAlignment(.center)
                         }
                                                 AdventureMapView(
                                                     cameraPosition: $cameraPosition,
