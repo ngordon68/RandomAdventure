@@ -12,7 +12,6 @@ import MapKit
     }
     
     var results: [LocationResult] = []
-   // var status: SearchStatus = .idle
     var completer: MKLocalSearchCompleter
     
     init(filter: MKPointOfInterestFilter = .excludingAll,
@@ -31,10 +30,8 @@ import MapKit
     private func handleSearchFragement(_ query: String) {
         guard !query.isEmpty else {
             results.removeAll()
-         //   status = .idle
             return
         }
-      //  status = .searching
         completer.queryFragment = query
     }
 }
@@ -46,7 +43,6 @@ extension LocationSearchServices: MKLocalSearchCompleterDelegate {
         self.results = completer.results.map ({ result in
             LocationResult(title: result.title, subtitle: result.subtitle)
         })
-     //   self.status = .results
     }
 
 
@@ -55,7 +51,6 @@ extension LocationSearchServices: MKLocalSearchCompleterDelegate {
 
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-   //     self.status = .error(error.localizedDescription)
     }
 }
 

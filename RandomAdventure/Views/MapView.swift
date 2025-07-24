@@ -15,7 +15,7 @@ struct MapView: View {
     @Environment(\.dismissSearch) var dismissSearch
     @FocusState private var isSearchFocused: Bool
     @State private var searchCategory:AdventureEnum = .bars
-    @State private var userLocation = ""
+   // @State private var userLocation = ""
     @State  var listOfAdventures: [MKMapItem]
     @State private var selection: MKMapItem?
     @State private var currentPlace: MKMapItem?
@@ -67,7 +67,7 @@ struct MapView: View {
                         
                         
                         Button {
-                            getCoordinate(addressString: userLocation) { coordinates, Error in
+                            getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
                                 search(for: searchCategory.rawValue, coordinates: coordinates)
                             }
                         } label: {
@@ -144,11 +144,11 @@ struct MapView: View {
                         search(for: searchCategory.rawValue, coordinates: coordinates)
                     }
                     
-                    locationSearchServices.query = ""
+                   // locationSearchServices.query = ""
                     locationSearchServices.results = []
 
-                        dismissSearch()
-                        isSearchFocused = false
+                       // dismissSearch()
+                       // isSearchFocused = false
                         isShowingSearchbar = false
                 }
                 
