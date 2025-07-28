@@ -12,15 +12,16 @@ import MapKit
 
 
 struct MapView: View {
+    @State private var locationSearchServices = LocationSearchServices()
+    @StateObject private var locationManager = LocationManager()
+    
     @Environment(\.dismissSearch) var dismissSearch
     @FocusState private var isSearchFocused: Bool
     @State private var searchCategory:AdventureEnum = .bars
-   // @State private var userLocation = ""
     @State  var listOfAdventures: [MKMapItem]
     @State private var selection: MKMapItem?
     @State private var currentPlace: MKMapItem?
     @State private var  isShowingNoInternetAlert: Bool = false
-    @State private var locationSearchServices = LocationSearchServices()
     @State private var isShowingSearchbar: Bool = false
  
     var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
@@ -46,7 +47,11 @@ struct MapView: View {
                 Color(.primary)
                     .ignoresSafeArea()
                 VStack {
-                    
+//                    
+//                    if let location = locationManager. {
+//                        Text("Your location: \(location.latitude), \(location.longitude)")
+//                    }
+
                     if !isSearchFocused  {
                         GroupBox {
                             HStack {
@@ -141,7 +146,7 @@ struct MapView: View {
             
                 Task {
                     getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
-                        search(for: searchCategory.rawValue, coordinates: coordinates)
+                        search(for: searchCategory.rawValue, coordinates: locationManager.lastKnownLocation ?? coordinates)
                     }
                     
                    // locationSearchServices.query = ""
@@ -152,6 +157,18 @@ struct MapView: View {
                         isShowingSearchbar = false
                 }
                 
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        locationManager.fetchUserLocation()
+                    } label: {
+                        Image(systemName: locationManager.isAuthorizedForLocation ?  "location.circle" : "location.slash.circle")
+                            .foregroundStyle(Color(.secondary))
+                    
+                    }
+                    .font(.title)
+                }
             }
         }
     }

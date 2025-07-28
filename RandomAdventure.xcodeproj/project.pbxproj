@@ -398,7 +398,8 @@
 				DEVELOPMENT_TEAM = 6FP5LT63NT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Ease of use to find adventures around you instead of typing";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ease of use to find adventures around you instead of typing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -432,7 +433,8 @@
 				DEVELOPMENT_TEAM = 6FP5LT63NT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Ease of use to find adventures around you instead of typing";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ease of use to find adventures around you instead of typing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
