@@ -13,10 +13,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObje
     
     @Published var lastKnownLocation: CLLocationCoordinate2D?
     var manager = CLLocationManager()
+    @Published var isShowingDeniedAlert: Bool = false
     
     override init() {
         super.init()
         manager.delegate = self
+        checkLocationAuthorization()
       
     }
     
@@ -32,9 +34,11 @@ final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObje
             
         case .restricted://The user cannot change this app’s status, possibly due to active restrictions such as parental controls being in place.
             print("Location restricted")
+            requestWhenInUseAuthorization()
             
         case .denied://The user dennied your app to get location or disabled the services location or the phone is in airplane mode
             print("Location denied")
+            isShowingDeniedAlert = true
             
         case .authorizedAlways://This authorization allows you to use all location services and receive location events whether or not your app is in use.
             print("Location authorizedAlways")
@@ -56,7 +60,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObje
     }
     
     func requestLocation() {
-        manager.requestLocation()
+        manager.requestLocation()        
     }
     
     
@@ -83,7 +87,11 @@ extension LocationManager {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastKnownLocation = locations.first?.coordinate
+        
+      //  lastKnownLocation = locations.first?.coordinate
+        
+        guard let userLocation = locations.first?.coordinate else { return }
+        lastKnownLocation = userLocation
         print("user coordinates updated \(String(describing: lastKnownLocation))")
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

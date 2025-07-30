@@ -14,10 +14,10 @@ import MapKit
 struct MapView: View {
     @State private var locationSearchServices = LocationSearchServices()
     @StateObject private var locationManager = LocationManager()
-    
     @Environment(\.dismissSearch) var dismissSearch
+    @Environment(\.openURL) var openURL
     @FocusState private var isSearchFocused: Bool
-    @State private var searchCategory:AdventureEnum = .bars
+    @State private var searchCategory:AdventureEnum = .food
     @State  var listOfAdventures: [MKMapItem]
     @State private var selection: MKMapItem?
     @State private var currentPlace: MKMapItem?
@@ -47,24 +47,19 @@ struct MapView: View {
                 Color(.primary)
                     .ignoresSafeArea()
                 VStack {
-//                    
-//                    if let location = locationManager. {
-//                        Text("Your location: \(location.latitude), \(location.longitude)")
-//                    }
 
                     if !isSearchFocused  {
                         GroupBox {
                             HStack {
                                 Text("Select Category:")
-                                    .foregroundStyle(Color(.accent))
-                                Picker("Mood", selection: $searchCategory) {
+                                    .foregroundStyle(Color(.customComponent))
+                                    .bold()
+                                Picker("Select Category", selection: $searchCategory) {
                                     ForEach(AdventureEnum.allCases, id: \.self) { mood in
                                         Text(mood.rawValue)
-                                            .foregroundStyle(Color(.accent))
-                                        
                                     }
                                 }
-                              //  .accentColor(Color(.accent))
+                                .accentColor(Color(.customComponent))
                             }
                         }
                         .backgroundStyle(Color(.secondary))
@@ -73,12 +68,12 @@ struct MapView: View {
                         
                         Button {
                             getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
-                                search(for: searchCategory.rawValue, coordinates: coordinates)
+                                search(for: searchCategory.rawValue, coordinates: (coordinates ?? locationManager.lastKnownLocation) ?? coordinates)
                             }
                         } label: {
                             Text("Find Adventure")
                                 .font(.headline)
-                                .foregroundColor(Color(.accent))
+                                .foregroundStyle(Color(.customComponent))
                                 .frame(width: UIScreen.main.bounds.width * 0.45, height: UIScreen.main.bounds.width * 0.15)
                                 .background(Color(.secondary))
                                 .cornerRadius(20)
@@ -111,8 +106,8 @@ struct MapView: View {
                                                     adventures: listOfAdventures,
                                                     selection: $selection
                                                 )
+                                                .padding()
                                                 .frame(maxHeight: .infinity) // Keep it full height
-                        
                                                 .toolbarBackground(Color(.primary), for: .navigationBar)
                                                 .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))
                                                 .onChange(of: currentPlace) { _, selection in
@@ -146,14 +141,9 @@ struct MapView: View {
             
                 Task {
                     getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
-                        search(for: searchCategory.rawValue, coordinates: locationManager.lastKnownLocation ?? coordinates)
+                        search(for: searchCategory.rawValue, coordinates: coordinates)
                     }
-                    
-                   // locationSearchServices.query = ""
                     locationSearchServices.results = []
-
-                       // dismissSearch()
-                       // isSearchFocused = false
                         isShowingSearchbar = false
                 }
                 
@@ -170,6 +160,19 @@ struct MapView: View {
                     .font(.title)
                 }
             }
+            .alert("Location access denied. Please go to your settings and allow location access", isPresented: $locationManager.isShowingDeniedAlert) {
+                Button("Settings", role: .none) {
+                           if let url = URL(string: UIApplication.openSettingsURLString) {
+                               openURL(url)
+                           }
+                       }
+                .tint(.primary)
+                .foregroundStyle(Color(.secondary))
+                Button("Cancel", role: .cancel) {}
+                    .tint(.primary)
+
+                   }
+           
         }
     }
     
@@ -183,7 +186,7 @@ struct MapView: View {
                     Text(location.title)
                     Text(location.subtitle)
                 }
-                .foregroundStyle(Color(.text))
+                .foregroundStyle(Color(.customText))
             }
         }
         
