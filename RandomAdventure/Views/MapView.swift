@@ -23,7 +23,9 @@ struct MapView: View {
     @State private var currentPlace: MKMapItem?
     @State private var  isShowingNoInternetAlert: Bool = false
     @State private var isShowingSearchbar: Bool = false
- 
+    @State private var isShowingFavoritesSheet: Bool = false
+    @State private var userFavorites: [LocationResult] = []
+    
     var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
     
     @State var cameraPosition: MapCameraPosition = .camera(
@@ -47,7 +49,7 @@ struct MapView: View {
                 Color(.primary)
                     .ignoresSafeArea()
                 VStack {
-
+                    
                     if !isSearchFocused  {
                         GroupBox {
                             HStack {
@@ -83,51 +85,83 @@ struct MapView: View {
                                 )
                                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 3)
                         }
-
+                        
                         .padding()
                         
-                        if listOfAdventures.isEmpty {
-                            
-                            Text("Select a genre to start your adventure!")
-                                .font(.title)
-                                .minimumScaleFactor(0.5)
-                                .multilineTextAlignment(.center)
-                        }
+                        //                        if listOfAdventures.isEmpty {
+                        //
+                        //                            Text("Select a genre to start your adventure!")
+                        //                                .font(.title)
+                        //                                .minimumScaleFactor(0.5)
+                        //                                .multilineTextAlignment(.center)
+                        //                        }
                         
-                        if listOfAdventures.count > 0 {
-                            Text("Your adventure is to \n \(currentPlace?.placemark.name ?? "")!")
-                                .font(.title)
-                                .minimumScaleFactor(0.5)
-                                .multilineTextAlignment(.center)
+                        //                        if listOfAdventures.count > 0 {
+                        //                            Text("Your adventure is to \n \(currentPlace?.placemark.name ?? "")!")
+                        //                                .font(.title)
+                        //                                .minimumScaleFactor(0.5)
+                        //                                .multilineTextAlignment(.center)
+                        //                        }
+                        AdventureMapView(
+                            cameraPosition: $cameraPosition,
+                            bounds: mapBounds,
+                            adventures: listOfAdventures,
+                            selection: $selection
+                        )
+                        .background {
+                            Rectangle()
+                                .frame(width: UIScreen.main.bounds.width * 0.97, height: UIScreen.main.bounds.width * 0.7)
+                                .foregroundStyle(Color(.secondary))
+                                .overlay(alignment: .topTrailing) {
+                                    Button(action: {
+                                        
+                                        addToFavorites()
+                                    }, label: {
+                                        Image(systemName: "heart.circle")
+                                            .foregroundStyle(Color.pink)
+                                            .font(.title)
+                                            .padding(3)
+                                    })
+                                }
                         }
-                                                AdventureMapView(
-                                                    cameraPosition: $cameraPosition,
-                                                    bounds: mapBounds,
-                                                    adventures: listOfAdventures,
-                                                    selection: $selection
-                                                )
-                                                .padding()
-                                                .frame(maxHeight: .infinity) // Keep it full height
-                                                .toolbarBackground(Color(.primary), for: .navigationBar)
-                                                .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))
-                                                .onChange(of: currentPlace) { _, selection in
-                                                    if let coordinate = selection?.placemark.coordinate {
-                                                        withAnimation(.easeInOut(duration: 1.0)) { // Adjust the animation style and duration as needed
-                                                            cameraPosition = .camera(
-                                                                MapCamera(
-                                                                    centerCoordinate: coordinate,
-                                                                    distance: 980,
-                                                                    heading: 242,
-                                                                    pitch: 60
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                                .alert("Please make sure you are connected to the internet", isPresented: $isShowingNoInternetAlert) {
-                                                    Button("OK", role: .cancel) {
-                                                    }
-                                                }
+                        .padding(UIScreen.main.bounds.width * 0.1)
+                        .frame(maxHeight: .infinity) // Keep it full height
+                        .toolbarBackground(Color(.primary), for: .navigationBar)
+                        .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))
+                        .onChange(of: currentPlace) { _, selection in
+                            if let coordinate = selection?.placemark.coordinate {
+                                withAnimation(.easeInOut(duration: 1.0)) { // Adjust the animation style and duration as needed
+                                    cameraPosition = .camera(
+                                        MapCamera(
+                                            centerCoordinate: coordinate,
+                                            distance: 980,
+                                            heading: 242,
+                                            pitch: 60
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        Text("You may also like")
+                            .font(.title)
+                            .bold()
+                        ScrollView(.horizontal) {
+                            HStack {
+                                ForEach(0..<4) { index in
+                                    Rectangle()
+                                        .frame(width: 150, height: 150)
+                                        .overlay {
+                                            Text("Some content")
+                                                .foregroundStyle(.white)
+                                        }
+                                    
+                                }
+                            }
+                        }
+                        .alert("Please make sure you are connected to the internet", isPresented: $isShowingNoInternetAlert) {
+                            Button("OK", role: .cancel) {
+                            }
+                        }
                         
                     } else {
                         locationResults
@@ -135,44 +169,57 @@ struct MapView: View {
                     }
                 }
             }
+            
             .searchable(text: $locationSearchServices.query, isPresented: $isShowingSearchbar, placement: .navigationBarDrawer, prompt: Text("City Name"))
             .searchFocused($isSearchFocused)
             .onSubmit(of: .search) {
-            
                 Task {
                     getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
                         search(for: searchCategory.rawValue, coordinates: coordinates)
                     }
                     locationSearchServices.results = []
-                        isShowingSearchbar = false
+                    isShowingSearchbar = false
                 }
                 
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        isShowingFavoritesSheet.toggle()
+                    } label: {
+                        Image(systemName: "heart.circle")
+                            .foregroundStyle(Color(.secondary))
+                        
+                    }
+                    .font(.title)
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
                         locationManager.fetchUserLocation()
                     } label: {
                         Image(systemName: locationManager.isAuthorizedForLocation ?  "location.circle" : "location.slash.circle")
                             .foregroundStyle(Color(.secondary))
-                    
+                        
                     }
                     .font(.title)
                 }
             }
             .alert("Location access denied. Please go to your settings and allow location access", isPresented: $locationManager.isShowingDeniedAlert) {
                 Button("Settings", role: .none) {
-                           if let url = URL(string: UIApplication.openSettingsURLString) {
-                               openURL(url)
-                           }
-                       }
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        openURL(url)
+                    }
+                }
                 .tint(.primary)
                 .foregroundStyle(Color(.secondary))
                 Button("Cancel", role: .cancel) {}
                     .tint(.primary)
-
-                   }
-           
+                
+            }
+            .sheet(isPresented: $isShowingFavoritesSheet) {
+              FavoritesView(userFavorites: userFavorites)
+            }
+            
         }
     }
     
@@ -192,7 +239,7 @@ struct MapView: View {
         
         .scrollContentBackground(.hidden)
     }
-
+    
     func search(for query: String, coordinates: CLLocationCoordinate2D) {
         
         let request = MKLocalSearch.Request()
@@ -234,6 +281,19 @@ struct MapView: View {
             
             completionHandler(kCLLocationCoordinate2DInvalid, error as NSError?)
         }
+    }
+    func addToFavorites() {
+        guard let place = currentPlace?.placemark else { return }
+        
+         let verifiedTitle = place.name ?? "Unknown Place"
+         let verifiedSubtitle = place.subtitle ?? ""
+         
+         let newItem = LocationResult(title: verifiedTitle, subtitle: verifiedSubtitle)
+         userFavorites.append(newItem)
+         
+         print("Added to favorites:", verifiedTitle, verifiedSubtitle)
+         
+
     }
 }
 

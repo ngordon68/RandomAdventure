@@ -30,10 +30,20 @@
 		8E99121129D0CF2900BAA8B4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8E83923C2E5F853D005CA222 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				FavoritesView.swift,
+			);
+			target = 8E3413402E25614700BA6683 /* RandomAdventureTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8E3413422E25614700BA6683 /* RandomAdventureTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RandomAdventureTests; sourceTree = "<group>"; };
 		8EC0D7B92D00900100051DA3 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
-		8EC0D7BB2D00901200051DA3 /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
+		8EC0D7BB2D00901200051DA3 /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8E83923C2E5F853D005CA222 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
 		8EC0D7BC2D00903200051DA3 /* Manager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Manager; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 

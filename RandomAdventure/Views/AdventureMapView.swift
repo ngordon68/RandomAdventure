@@ -15,14 +15,17 @@ struct AdventureMapView: View {
     @Binding var selection: MKMapItem?
 
     var body: some View {
+       
         Map(position: $cameraPosition, bounds: bounds, selection: $selection) {
             ForEach(adventures, id: \.self) { store in
                 Marker(item: store)
                     .annotationTitles(.visible)
             }
             .mapItemDetailSelectionAccessory(.sheet)
+          
+
         }
-        .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))
+        .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))      
     }
 }
 

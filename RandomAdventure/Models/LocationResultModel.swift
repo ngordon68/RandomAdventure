@@ -11,5 +11,6 @@ struct LocationResult: Identifiable, Hashable {
     var id = UUID()
     var title: String
     var subtitle: String
+    var isFavorite: Bool = false
     
 }
