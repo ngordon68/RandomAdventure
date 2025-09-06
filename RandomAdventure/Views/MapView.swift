@@ -88,30 +88,18 @@ struct MapView: View {
                         
                         .padding()
                         
-                        //                        if listOfAdventures.isEmpty {
-                        //
-                        //                            Text("Select a genre to start your adventure!")
-                        //                                .font(.title)
-                        //                                .minimumScaleFactor(0.5)
-                        //                                .multilineTextAlignment(.center)
-                        //                        }
-                        
-                        //                        if listOfAdventures.count > 0 {
-                        //                            Text("Your adventure is to \n \(currentPlace?.placemark.name ?? "")!")
-                        //                                .font(.title)
-                        //                                .minimumScaleFactor(0.5)
-                        //                                .multilineTextAlignment(.center)
-                        //                        }
                         AdventureMapView(
                             cameraPosition: $cameraPosition,
                             bounds: mapBounds,
                             adventures: listOfAdventures,
                             selection: $selection
                         )
+                        .cornerRadius(15)
                         .background {
                             Rectangle()
-                                .frame(width: UIScreen.main.bounds.width * 0.97, height: UIScreen.main.bounds.width * 0.7)
+                                .frame(width: UIScreen.main.bounds.width * 0.93, height: UIScreen.main.bounds.width * 0.7)
                                 .foregroundStyle(Color(.secondary))
+                                .cornerRadius(15)
                                 .overlay(alignment: .topTrailing) {
                                     Button(action: {
                                         
@@ -217,7 +205,7 @@ struct MapView: View {
                 
             }
             .sheet(isPresented: $isShowingFavoritesSheet) {
-              FavoritesView(userFavorites: userFavorites)
+                FavoritesView(userFavorites: $userFavorites)
             }
             
         }
@@ -283,17 +271,19 @@ struct MapView: View {
         }
     }
     func addToFavorites() {
+        let generator = UINotificationFeedbackGenerator()
         guard let place = currentPlace?.placemark else { return }
-        
          let verifiedTitle = place.name ?? "Unknown Place"
          let verifiedSubtitle = place.subtitle ?? ""
-         
-         let newItem = LocationResult(title: verifiedTitle, subtitle: verifiedSubtitle)
-         userFavorites.append(newItem)
-         
-         print("Added to favorites:", verifiedTitle, verifiedSubtitle)
-         
-
+         let newItem = LocationResult(title: verifiedTitle, subtitle: verifiedSubtitle, isFavorite: true)
+        
+        if userFavorites.contains(where: { $0.title == verifiedTitle }) {
+            print("item already exist")
+            return
+        } else {
+            userFavorites.append(newItem)
+            generator.notificationOccurred(.success)
+        }
     }
 }
 
