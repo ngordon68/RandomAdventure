@@ -138,6 +138,7 @@ struct MapView: View {
                                 ForEach(0..<4) { index in
                                     Rectangle()
                                         .frame(width: 150, height: 150)
+                                        .cornerRadius(15)
                                         .overlay {
                                             Text("Some content")
                                                 .foregroundStyle(.white)
