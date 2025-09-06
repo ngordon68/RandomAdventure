@@ -139,9 +139,10 @@ struct MapView: View {
                                     Rectangle()
                                         .frame(width: 150, height: 150)
                                         .cornerRadius(15)
+                                        .foregroundStyle(Color(.secondary))
                                         .overlay {
                                             Text("Some content")
-                                                .foregroundStyle(.white)
+                                                .foregroundStyle(Color(.customComponent))
                                         }
                                     
                                 }
