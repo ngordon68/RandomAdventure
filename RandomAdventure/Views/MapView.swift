@@ -8,6 +8,7 @@ import SwiftUI
 
 import SwiftUI
 import MapKit
+import FoundationModels
 
 
 
@@ -71,7 +72,7 @@ struct MapView: View {
                         
                         Button {
                             getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
-                                search(for: searchCategory.rawValue, coordinates: (coordinates ?? locationManager.lastKnownLocation) ?? coordinates)
+                                search(for: searchCategory.rawValue, coordinates: (coordinates))
                             }
                         } label: {
                             Text("Find Adventure")
@@ -163,19 +164,6 @@ struct MapView: View {
                     }
                 }
             }
-            
-            .searchable(text: $locationSearchServices.query, isPresented: $isShowingSearchbar, placement: .navigationBarDrawer, prompt: Text("City Name"))
-            .searchFocused($isSearchFocused)
-            .onSubmit(of: .search) {
-                Task {
-                    getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
-                        search(for: searchCategory.rawValue, coordinates: coordinates)
-                    }
-                    locationSearchServices.results = []
-                    isShowingSearchbar = false
-                }
-                
-            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -191,7 +179,10 @@ struct MapView: View {
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        locationManager.fetchUserLocation()
+                     //   locationManager.fetchUserLocation()
+                        Task {
+                          //  try await generateResponse()
+                        }
                     } label: {
                         Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
                     }
@@ -218,6 +209,19 @@ struct MapView: View {
          
             
         }
+        .searchable(text: $locationSearchServices.query, isPresented: $isShowingSearchbar, placement: .navigationBarDrawer, prompt: Text("City Name"))
+        .searchFocused($isSearchFocused)
+        .onSubmit(of: .search) {
+            Task {
+                getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
+                    search(for: searchCategory.rawValue, coordinates: coordinates)
+                }
+                locationSearchServices.results = []
+                isShowingSearchbar = false
+            }
+            
+        }
+        .searchToolbarBehavior(.minimize)
      
     }
     
