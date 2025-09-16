@@ -47,7 +47,7 @@ struct MapView: View {
         NavigationStack {
             ZStack {
                 Color(.primary)
-                    .ignoresSafeArea()
+                  .ignoresSafeArea()
                 VStack {
                     
                     if !isSearchFocused  {
@@ -66,6 +66,7 @@ struct MapView: View {
                         }
                         .backgroundStyle(Color(.secondary))
                         .padding(.top, 10)
+                      //  .glassEffect()
                         
                         
                         Button {
@@ -102,14 +103,16 @@ struct MapView: View {
                                 .cornerRadius(15)
                                 .overlay(alignment: .topTrailing) {
                                     Button(action: {
-                                        
                                         addToFavorites()
                                     }, label: {
                                         Image(systemName: "heart.circle")
-                                            .foregroundStyle(Color.pink)
+                                            .foregroundStyle(.pink)
                                             .font(.title)
-                                            .padding(3)
+                                            .padding(5)
                                     })
+                                  //  .buttonStyle(.glass)
+                                  
+                                    
                                 }
                         }
                         .padding(UIScreen.main.bounds.width * 0.1)
@@ -155,6 +158,7 @@ struct MapView: View {
                         
                     } else {
                         locationResults
+                          
                         
                     }
                 }
@@ -177,21 +181,23 @@ struct MapView: View {
                     Button {
                         isShowingFavoritesSheet.toggle()
                     } label: {
-                        Image(systemName: "heart.circle")
+                        Image(systemName: "heart")
                             .foregroundStyle(Color(.secondary))
+                           
                         
                     }
                     .font(.title)
+                   // .buttonStyle(.glass)
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
                         locationManager.fetchUserLocation()
                     } label: {
-                        Image(systemName: locationManager.isAuthorizedForLocation ?  "location.circle" : "location.slash.circle")
-                            .foregroundStyle(Color(.secondary))
-                        
+                        Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
                     }
-                    .font(.title)
+                    //.font(.title)
+                    //.buttonStyle(.glass)
+                    .foregroundStyle(Color(.secondary))
                 }
             }
             .alert("Location access denied. Please go to your settings and allow location access", isPresented: $locationManager.isShowingDeniedAlert) {
@@ -209,8 +215,10 @@ struct MapView: View {
             .sheet(isPresented: $isShowingFavoritesSheet) {
                 FavoritesView(userFavorites: $userFavorites)
             }
+         
             
         }
+     
     }
     
     var locationResults: some View {
@@ -224,10 +232,13 @@ struct MapView: View {
                     Text(location.subtitle)
                 }
                 .foregroundStyle(Color(.customText))
+           
             }
+          
         }
         
         .scrollContentBackground(.hidden)
+     //   .glassEffect()
     }
     
     func search(for query: String, coordinates: CLLocationCoordinate2D) {
