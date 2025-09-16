@@ -46,169 +46,171 @@ struct MapView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.primary)
-                  .ignoresSafeArea()
-                VStack {
-                    
-                    if !isSearchFocused  {
-                        GroupBox {
-                            HStack {
-                                Text("Select Category:")
+            GeometryReader { geometry in
+                ZStack {
+                    Color(.primary)
+                      .ignoresSafeArea()
+                    VStack {
+                        
+                        if !isSearchFocused  {
+                            GroupBox {
+                                HStack {
+                                    Text("Select Category:")
+                                        .foregroundStyle(Color(.customComponent))
+                                        .bold()
+                                    Picker("Select Category", selection: $searchCategory) {
+                                        ForEach(AdventureEnum.allCases, id: \.self) { mood in
+                                            Text(mood.rawValue)
+                                        }
+                                    }
+                                    .accentColor(Color(.customComponent))
+                                }
+                            }
+                            .backgroundStyle(Color(.secondary))
+                            .padding(.top, 10)
+                          //  .glassEffect()
+                            
+                            
+                            Button {
+                                getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
+                                    search(for: searchCategory.rawValue, coordinates: (coordinates))
+                                }
+                            } label: {
+                                Text("Find Adventure")
+                                    .font(.headline)
                                     .foregroundStyle(Color(.customComponent))
-                                    .bold()
-                                Picker("Select Category", selection: $searchCategory) {
-                                    ForEach(AdventureEnum.allCases, id: \.self) { mood in
-                                        Text(mood.rawValue)
+                                    .frame(width: geometry.size.width * 0.45, height: geometry.size.width * 0.15)
+                                    .background(Color(.secondary))
+                                    .cornerRadius(20)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .stroke(Color.white.opacity(0.7), lineWidth: 5)
+                                    )
+                                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 3)
+                            }
+                            
+                            .padding()
+                            
+                            AdventureMapView(
+                                cameraPosition: $cameraPosition,
+                                bounds: mapBounds,
+                                adventures: listOfAdventures,
+                                selection: $selection
+                            )
+                            .cornerRadius(15)
+                            .background {
+                                Rectangle()
+                                    .frame(width: geometry.size.width * 0.93, height: geometry.size.width * 0.7)
+                                    .foregroundStyle(Color(.secondary))
+                                    .cornerRadius(15)
+                                    .overlay(alignment: .topTrailing) {
+                                        Button(action: {
+                                            addToFavorites()
+                                        }, label: {
+                                            Image(systemName: "heart.circle")
+                                                .foregroundStyle(.pink)
+                                                .font(.title)
+                                                .padding(5)
+                                        })
+                                      //  .buttonStyle(.glass)
+                                      
+                                        
+                                    }
+                            }
+                            .padding(geometry.size.width * 0.1)
+                            .frame(maxHeight: .infinity) // Keep it full height
+                            .toolbarBackground(Color(.primary), for: .navigationBar)
+                            .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))
+                            .onChange(of: currentPlace) { _, selection in
+                                if let coordinate = selection?.placemark.coordinate {
+                                    withAnimation(.easeInOut(duration: 1.0)) { // Adjust the animation style and duration as needed
+                                        cameraPosition = .camera(
+                                            MapCamera(
+                                                centerCoordinate: coordinate,
+                                                distance: 980,
+                                                heading: 242,
+                                                pitch: 60
+                                            )
+                                        )
                                     }
                                 }
-                                .accentColor(Color(.customComponent))
                             }
-                        }
-                        .backgroundStyle(Color(.secondary))
-                        .padding(.top, 10)
-                      //  .glassEffect()
-                        
-                        
-                        Button {
-                            getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
-                                search(for: searchCategory.rawValue, coordinates: (coordinates))
-                            }
-                        } label: {
-                            Text("Find Adventure")
-                                .font(.headline)
-                                .foregroundStyle(Color(.customComponent))
-                                .frame(width: UIScreen.main.bounds.width * 0.45, height: UIScreen.main.bounds.width * 0.15)
-                                .background(Color(.secondary))
-                                .cornerRadius(20)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .stroke(Color.white.opacity(0.7), lineWidth: 5)
-                                )
-                                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 3)
-                        }
-                        
-                        .padding()
-                        
-                        AdventureMapView(
-                            cameraPosition: $cameraPosition,
-                            bounds: mapBounds,
-                            adventures: listOfAdventures,
-                            selection: $selection
-                        )
-                        .cornerRadius(15)
-                        .background {
-                            Rectangle()
-                                .frame(width: UIScreen.main.bounds.width * 0.93, height: UIScreen.main.bounds.width * 0.7)
-                                .foregroundStyle(Color(.secondary))
-                                .cornerRadius(15)
-                                .overlay(alignment: .topTrailing) {
-                                    Button(action: {
-                                        addToFavorites()
-                                    }, label: {
-                                        Image(systemName: "heart.circle")
-                                            .foregroundStyle(.pink)
-                                            .font(.title)
-                                            .padding(5)
-                                    })
-                                  //  .buttonStyle(.glass)
-                                  
-                                    
-                                }
-                        }
-                        .padding(UIScreen.main.bounds.width * 0.1)
-                        .frame(maxHeight: .infinity) // Keep it full height
-                        .toolbarBackground(Color(.primary), for: .navigationBar)
-                        .mapStyle(.standard(elevation: .realistic, pointsOfInterest: .excludingAll))
-                        .onChange(of: currentPlace) { _, selection in
-                            if let coordinate = selection?.placemark.coordinate {
-                                withAnimation(.easeInOut(duration: 1.0)) { // Adjust the animation style and duration as needed
-                                    cameraPosition = .camera(
-                                        MapCamera(
-                                            centerCoordinate: coordinate,
-                                            distance: 980,
-                                            heading: 242,
-                                            pitch: 60
-                                        )
-                                    )
+                            Text("You may also like")
+                                .font(.title)
+                                .bold()
+                            ScrollView(.horizontal) {
+                                HStack {
+                                    ForEach(0..<4) { index in
+                                        Rectangle()
+                                            .frame(width: 150, height: 150)
+                                            .cornerRadius(15)
+                                            .foregroundStyle(Color(.secondary))
+                                            .overlay {
+                                                Text("Some content")
+                                                    .foregroundStyle(Color(.customComponent))
+                                            }
+                                        
+                                    }
                                 }
                             }
-                        }
-                        Text("You may also like")
-                            .font(.title)
-                            .bold()
-                        ScrollView(.horizontal) {
-                            HStack {
-                                ForEach(0..<4) { index in
-                                    Rectangle()
-                                        .frame(width: 150, height: 150)
-                                        .cornerRadius(15)
-                                        .foregroundStyle(Color(.secondary))
-                                        .overlay {
-                                            Text("Some content")
-                                                .foregroundStyle(Color(.customComponent))
-                                        }
-                                    
+                            .alert("Please make sure you are connected to the internet", isPresented: $isShowingNoInternetAlert) {
+                                Button("OK", role: .cancel) {
                                 }
                             }
+                            
+                        } else {
+                            locationResults
+                              
+                            
                         }
-                        .alert("Please make sure you are connected to the internet", isPresented: $isShowingNoInternetAlert) {
-                            Button("OK", role: .cancel) {
-                            }
-                        }
-                        
-                    } else {
-                        locationResults
-                          
-                        
                     }
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isShowingFavoritesSheet.toggle()
-                    } label: {
-                        Image(systemName: "heart")
-                            .foregroundStyle(Color(.secondary))
-                           
-                        
-                    }
-                    .font(.title)
-                   // .buttonStyle(.glass)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isShowingFavoritesSheet.toggle()
+                } label: {
+                    Image(systemName: "heart")
+                        .foregroundStyle(Color(.secondary))
+                       
+                    
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                     //   locationManager.fetchUserLocation()
-                        Task {
-                          //  try await generateResponse()
-                        }
-                    } label: {
-                        Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
-                    }
-                    //.font(.title)
-                    //.buttonStyle(.glass)
-                    .foregroundStyle(Color(.secondary))
-                }
+                .font(.title)
+               // .buttonStyle(.glass)
             }
-            .alert("Location access denied. Please go to your settings and allow location access", isPresented: $locationManager.isShowingDeniedAlert) {
-                Button("Settings", role: .none) {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        openURL(url)
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                 //   locationManager.fetchUserLocation()
+                    Task {
+                      //  try await generateResponse()
                     }
+                } label: {
+                    Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
                 }
-                .tint(.primary)
+                //.font(.title)
+                //.buttonStyle(.glass)
                 .foregroundStyle(Color(.secondary))
-                Button("Cancel", role: .cancel) {}
-                    .tint(.primary)
-                
             }
-            .sheet(isPresented: $isShowingFavoritesSheet) {
-                FavoritesView(userFavorites: $userFavorites)
+        }
+        .alert("Location access denied. Please go to your settings and allow location access", isPresented: $locationManager.isShowingDeniedAlert) {
+            Button("Settings", role: .none) {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    openURL(url)
+                }
             }
-         
+            .tint(.primary)
+            .foregroundStyle(Color(.secondary))
+            Button("Cancel", role: .cancel) {}
+                .tint(.primary)
             
         }
+        .sheet(isPresented: $isShowingFavoritesSheet) {
+            FavoritesView(userFavorites: $userFavorites)
+        }
+     
+        
         .searchable(text: $locationSearchServices.query, isPresented: $isShowingSearchbar, placement: .navigationBarDrawer, prompt: Text("City Name"))
         .searchFocused($isSearchFocused)
         .onSubmit(of: .search) {
@@ -307,6 +309,7 @@ struct MapView: View {
 #Preview {
     MapView(listOfAdventures: [])
 }
+
 
 
 
