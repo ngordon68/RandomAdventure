@@ -10,8 +10,6 @@ import SwiftUI
 import MapKit
 import FoundationModels
 
-
-
 struct MapView: View {
     @State private var locationSearchServices = LocationSearchServices()
     @StateObject private var locationManager = LocationManager()
@@ -26,6 +24,7 @@ struct MapView: View {
     @State private var isShowingSearchbar: Bool = false
     @State private var isShowingFavoritesSheet: Bool = false
     @State private var userFavorites: [LocationResult] = []
+    @State private var placeRecommendations: [PlaceRecommendation] = []
     
     var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
     
@@ -51,11 +50,11 @@ struct MapView: View {
                     Color(.primary)
                       .ignoresSafeArea()
                     VStack {
-                        
+                    
                         if !isSearchFocused  {
                             GroupBox {
                                 HStack {
-                                    Text("Select Category:")
+                                    Text("Category:")
                                         .foregroundStyle(Color(.customComponent))
                                         .bold()
                                     Picker("Select Category", selection: $searchCategory) {
@@ -67,10 +66,11 @@ struct MapView: View {
                                 }
                             }
                             .backgroundStyle(Color(.secondary))
-                            .padding(.top, 10)
+                            //.padding(.top, 10)
                           //  .glassEffect()
                             
                             
+    
                             Button {
                                 getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
                                     search(for: searchCategory.rawValue, coordinates: (coordinates))
@@ -88,8 +88,8 @@ struct MapView: View {
                                     )
                                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 3)
                             }
-                            
                             .padding()
+                       
                             
                             AdventureMapView(
                                 cameraPosition: $cameraPosition,
@@ -164,36 +164,51 @@ struct MapView: View {
                             
                         }
                     }
-                }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    isShowingFavoritesSheet.toggle()
-                } label: {
-                    Image(systemName: "heart")
-                        .foregroundStyle(Color(.secondary))
-                       
+                    .padding(.bottom, 30 )
                     
                 }
-                .font(.title)
-               // .buttonStyle(.glass)
             }
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                 //   locationManager.fetchUserLocation()
-                    Task {
-                      //  try await generateResponse()
+            
+            .toolbar {
+                
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                     //   locationManager.fetchUserLocation()
+                    
+                        
+                        Task {
+                          try await generateRecommendations()
+                        }
+                    } label: {
+                        Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
                     }
-                } label: {
-                    Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
+                    //.font(.title)
+                    //.buttonStyle(.glass)
+                  //  .foregroundStyle(Color(.secondary))
                 }
-                //.font(.title)
-                //.buttonStyle(.glass)
-                .foregroundStyle(Color(.secondary))
+          
+                           ToolbarSpacer(.flexible, placement: .bottomBar)
+                
+                DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                
+                ToolbarSpacer(.flexible, placement: .bottomBar)
+                
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                        isShowingFavoritesSheet.toggle()
+                    } label: {
+                        Image(systemName: "heart")
+                           // .foregroundStyle(Color(.secondary))
+                    }
+                    .font(.title)
+                   // .buttonStyle(.glass)
+                }
+
             }
+           
         }
+     
+    
         .alert("Location access denied. Please go to your settings and allow location access", isPresented: $locationManager.isShowingDeniedAlert) {
             Button("Settings", role: .none) {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -213,6 +228,7 @@ struct MapView: View {
         
         .searchable(text: $locationSearchServices.query, isPresented: $isShowingSearchbar, placement: .navigationBarDrawer, prompt: Text("City Name"))
         .searchFocused($isSearchFocused)
+  
         .onSubmit(of: .search) {
             Task {
                 getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
@@ -223,7 +239,8 @@ struct MapView: View {
             }
             
         }
-        .searchToolbarBehavior(.minimize)
+       // .searchToolbarBehavior(.minimize)
+       
      
     }
     
@@ -304,13 +321,24 @@ struct MapView: View {
             generator.notificationOccurred(.success)
         }
     }
+    
+    func generateRecommendations() async throws  {
+    print("starting recommendations")
+        let instructions = "You are an travel agent with the goal of providing the best experience to the user. Please suggest a place to visit that has a similiar vibe to the following items in the list... \(userFavorites) and in Detroit"
+        let session = LanguageModelSession(instructions: instructions)
+        let placeInfo = try await session.respond(
+            to: "Suggest a place to visit that has a similiar vibe to the following items in the list... \(userFavorites)",
+            generating: PlaceRecommendation.self
+        )
+        print("Title: \(placeInfo.content)")
+    }
+    
+    
 }
 
 #Preview {
     MapView(listOfAdventures: [])
 }
-
-
 
 
 
