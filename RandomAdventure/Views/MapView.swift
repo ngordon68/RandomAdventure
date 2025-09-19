@@ -145,30 +145,33 @@ struct MapView: View {
                             Text("You may also like")
                                 .font(.title)
                                 .bold()
-                            ScrollView(.horizontal) {
-                                HStack {
-                                    ForEach(placeRecommendations, id: \.id) { place in
-                                        Rectangle()
-                                            .frame(width: 150, height: 150)
-                                            .cornerRadius(15)
-                                            .foregroundStyle(Color(.secondary))
-                                            .overlay {
-                                                VStack {
-                                                    Text(place.title)
-                                                    Text(place.subtitle)
-                                                    
-                                                }
+                            
+                            if placeRecommendations.isEmpty {
+                                Rectangle()
+                                    .frame(width: 150, height: 150)
+                                    .cornerRadius(15)
+                                    .foregroundStyle(Color(.secondary))
+                            }
+                                ScrollView(.horizontal) {
+                                    HStack {
+                                        ForEach(placeRecommendations, id: \.id) { place in
+                                            Rectangle()
+                                                .frame(width: 150, height: 150)
+                                                .cornerRadius(15)
+                                                .foregroundStyle(Color(.secondary))
+                                                .overlay {
+                                                    VStack {
+                                                        Text(place.title)
+                                                        Text(place.subtitle)
+                                                        
+                                                    }
                                                     .foregroundStyle(Color(.customComponent))
-                                            }
-                                        
+                                                }
+                                            
+                                        }
                                     }
                                 }
-                            }
-                            .alert("Please make sure you are connected to the internet", isPresented: $isShowingNoInternetAlert) {
-                                Button("OK", role: .cancel) {
-                                }
-                            }
-                            
+                                
                         } else {
                             locationResults
                               
@@ -177,6 +180,10 @@ struct MapView: View {
                     }
                     .padding(.bottom, 30 )
                     
+                }
+            }
+            .alert("Please make sure you are connected to the internet", isPresented: $isShowingNoInternetAlert) {
+                Button("OK", role: .cancel) {
                 }
             }
             
