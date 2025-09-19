@@ -10,6 +10,10 @@ import SwiftUI
 import MapKit
 import FoundationModels
 
+extension PlaceRecommendation: Identifiable {
+    public var id: String { "\(title)|\(subtitle)" }
+}
+
 struct MapView: View {
     @State private var locationSearchServices = LocationSearchServices()
     @StateObject private var locationManager = LocationManager()
@@ -24,7 +28,10 @@ struct MapView: View {
     @State private var isShowingSearchbar: Bool = false
     @State private var isShowingFavoritesSheet: Bool = false
     @State private var userFavorites: [LocationResult] = []
-    @State private var placeRecommendations: [PlaceRecommendation] = []
+    @State private var placeRecommendations: [PlaceRecommendation] = [
+        
+        PlaceRecommendation(title: "Some Content", subtitle: "Some Content")
+    ]
     
     var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
     
@@ -140,13 +147,17 @@ struct MapView: View {
                                 .bold()
                             ScrollView(.horizontal) {
                                 HStack {
-                                    ForEach(0..<4) { index in
+                                    ForEach(placeRecommendations, id: \.id) { place in
                                         Rectangle()
                                             .frame(width: 150, height: 150)
                                             .cornerRadius(15)
                                             .foregroundStyle(Color(.secondary))
                                             .overlay {
-                                                Text("Some content")
+                                                VStack {
+                                                    Text(place.title)
+                                                    Text(place.subtitle)
+                                                    
+                                                }
                                                     .foregroundStyle(Color(.customComponent))
                                             }
                                         
@@ -264,10 +275,10 @@ struct MapView: View {
      //   .glassEffect()
     }
     
-    func search(for query: String, coordinates: CLLocationCoordinate2D) {
+    func search(for query: String? = nil, coordinates: CLLocationCoordinate2D, generatedPlaceName: String? = nil) {
         
         let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = query
+        request.naturalLanguageQuery = query ?? generatedPlaceName
         request.resultTypes = .pointOfInterest
         request.region = MKCoordinateRegion (
             
@@ -276,17 +287,29 @@ struct MapView: View {
         Task {
             let search = MKLocalSearch(request: request)
             let response = try? await search.start()
-            listOfAdventures = response?.mapItems ?? []
             
-            if let singleAdventure = listOfAdventures.randomElement() {
-                listOfAdventures.append(singleAdventure)
-                listOfAdventures.removeAll(where: { $0 != singleAdventure})
-                listOfAdventures.removeLast()
-                currentPlace = singleAdventure
-            } else {
-                isShowingNoInternetAlert = true
-            }
             
+                listOfAdventures = response?.mapItems ?? []
+                if let singleAdventure = listOfAdventures.randomElement() {
+                    listOfAdventures.append(singleAdventure)
+                    listOfAdventures.removeAll(where: { $0 != singleAdventure})
+                    listOfAdventures.removeLast()
+                    if query != nil {
+                        currentPlace = singleAdventure
+                    }
+                    
+                    if generatedPlaceName != nil {
+                        let placeResult = listOfAdventures.map { PlaceRecommendation(title: $0.name ?? "No name Available", subtitle: $0.address?.fullAddress ?? "no address available") }
+                        
+                        placeRecommendations.append(placeResult[0])
+                    }
+                    
+                } else {
+                    isShowingNoInternetAlert = true
+                }
+            
+            
+        
         }
     }
     
@@ -324,21 +347,31 @@ struct MapView: View {
     
     func generateRecommendations() async throws  {
     print("starting recommendations")
-        let instructions = "You are an travel agent with the goal of providing the best experience to the user. Please suggest a place to visit that has a similiar vibe to the following items in the list... \(userFavorites) and in Detroit"
+        let instructions = "You are an travel agent with the goal of providing the best experience to the user."
         let session = LanguageModelSession(instructions: instructions)
         let placeInfo = try await session.respond(
-            to: "Suggest a place to visit that has a similiar vibe to the following items in the list... \(userFavorites)",
+            to: "Please suggest a place to visit based off one of the following \(AdventureEnum.allCases) that has a similiar vibe to the following items in the list... \(userFavorites) and located in Detroit",
             generating: PlaceRecommendation.self
         )
         print("Title: \(placeInfo.content)")
-    }
+        
+        takeGeneratedRecommendationAndMakeMapItem(placeInfo: placeInfo.content.title)
     
+    }
+  
+    func takeGeneratedRecommendationAndMakeMapItem(placeInfo: String) {
+        getCoordinate(addressString: placeInfo) { coordinates, Error in
+          //  search(for: placeInfo, coordinates: (coordinates)) //maybe use enum
+            search( coordinates: (coordinates), generatedPlaceName: placeInfo)
+        }
+    }
     
 }
 
 #Preview {
     MapView(listOfAdventures: [])
 }
+
 
 
 
