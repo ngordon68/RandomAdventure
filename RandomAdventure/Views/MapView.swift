@@ -15,6 +15,9 @@ extension PlaceRecommendation: Identifiable {
 }
 
 struct MapView: View {
+    @AppStorage("lastRecommendationDate") private var lastRecommendationDate: Double = 0
+    @Environment(\.scenePhase) private var scenePhase
+
     @State private var locationSearchServices = LocationSearchServices()
     @StateObject private var locationManager = LocationManager()
     @Environment(\.dismissSearch) var dismissSearch
@@ -28,10 +31,22 @@ struct MapView: View {
     @State private var isShowingSearchbar: Bool = false
     @State private var isShowingFavoritesSheet: Bool = false
     @State private var userFavorites: [LocationResult] = []
-    @State private var placeRecommendations: [PlaceRecommendation] = [
-        
-        PlaceRecommendation(title: "Some Content", subtitle: "Some Content")
-    ]
+    @State private var placeRecommendations: [PlaceRecommendation] = []
+    
+    private func isNewDaySinceLastRecommendation() -> Bool {
+        let last = Date(timeIntervalSince1970: lastRecommendationDate)
+        return !Calendar.current.isDateInToday(last)
+    }
+
+    private func generateAndSaveRecommendationIfNeeded() async {
+        guard isNewDaySinceLastRecommendation() else { return }
+        do {
+            try await generateRecommendations()
+            lastRecommendationDate = Date().timeIntervalSince1970
+        } catch {
+            // Optionally handle/log the error
+        }
+    }
     
     var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
     
@@ -145,32 +160,58 @@ struct MapView: View {
                             Text("You may also like")
                                 .font(.title)
                                 .bold()
+                                .opacity(placeRecommendations.isEmpty ? 0 : 1)
                             
                             if placeRecommendations.isEmpty {
                                 Rectangle()
-                                    .frame(width: 150, height: 150)
+                                    .frame(width: 350, height: 150)
                                     .cornerRadius(15)
                                     .foregroundStyle(Color(.secondary))
-                            }
+                                    .opacity(0)
+                                    .overlay {
+                                        Text("Your AI picks are waiting! Just favorite a few spots to unlock personalized suggestions")
+                                            .font(.title)
+                                    }
+                            } else {
                                 ScrollView(.horizontal) {
                                     HStack {
                                         ForEach(placeRecommendations, id: \.id) { place in
                                             Rectangle()
-                                                .frame(width: 150, height: 150)
+                                                .frame(width: 160, height: 150)
                                                 .cornerRadius(15)
                                                 .foregroundStyle(Color(.secondary))
                                                 .overlay {
-                                                    VStack {
-                                                        Text(place.title)
-                                                        Text(place.subtitle)
-                                                        
+                                                    ZStack(alignment: .topTrailing) {
+                                                        VStack(alignment: .leading, spacing: 8) {
+                                                            Text(place.title)
+                                                                .font(.headline)
+                                                                .lineLimit(2)
+                                                                .minimumScaleFactor(0.8)
+                                                            
+                                                            Text(place.subtitle)
+                                                                .font(.caption)
+                                                                .foregroundStyle(.secondary)
+                                                                .lineLimit(3)
+                                                            
+                                                            Spacer(minLength: 0)
+                                                            
+                                                            Button {
+                                                                centerOnPlace(from: place)
+                                                            } label: {
+                                                                Label("Show on Map", systemImage: "map")
+                                                                    .font(.caption)
+                                                            }
+                                                            .buttonStyle(.bordered)
+                                                        }
+                                                        .padding(10)
+                                                        .foregroundStyle(Color(.customComponent))
+                                                 
                                                     }
-                                                    .foregroundStyle(Color(.customComponent))
                                                 }
-                                            
                                         }
                                     }
                                 }
+                            }
                                 
                         } else {
                             locationResults
@@ -195,7 +236,7 @@ struct MapView: View {
                     
                         
                         Task {
-                          try await generateRecommendations()
+                            try await generateRecommendations()
                         }
                     } label: {
                         Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
@@ -225,7 +266,17 @@ struct MapView: View {
             }
            
         }
-     
+      
+        .task {
+            if isNewDaySinceLastRecommendation() {
+                await generateAndSaveRecommendationIfNeeded()
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active, isNewDaySinceLastRecommendation() {
+                Task { await generateAndSaveRecommendationIfNeeded() }
+            }
+        }
     
         .alert("Location access denied. Please go to your settings and allow location access", isPresented: $locationManager.isShowingDeniedAlert) {
             Button("Settings", role: .none) {
@@ -354,18 +405,33 @@ struct MapView: View {
     
     func generateRecommendations() async throws  {
     print("starting recommendations")
-        let instructions = "You are an travel agent with the goal of providing the best experience to the user."
+        let instructions = """
+        You are a travel agent with the goal of providing the best experience to the user.
+          When providing a recommendation, include:
+          - title: The name of the place
+          - subtitle: A short description
+        """
+
+      //  let session = LanguageModelSession(instructions: instructions)
+
+//        let placeInfo = try await session.respond(
+//            to: """
+//        Please suggest a place to visit based on one of \(AdventureEnum.allCases) with a similar vibe to the user's favorites \(userFavorites), located in Detroit.
+//        """,
+//           generating: PlaceRecommendation.self
+//        )
         let session = LanguageModelSession(instructions: instructions)
         let placeInfo = try await session.respond(
-            to: "Please suggest a place to visit based off one of the following \(AdventureEnum.allCases) that has a similiar vibe to the following items in the list... \(userFavorites) and located in Detroit",
+            to: "Please suggest a place to visit based off one of the following \(AdventureEnum.allCases) that has a similiar vibe to the following items in the list... \(userFavorites) and location of the suggested place based off locations in \(userFavorites).",
             generating: PlaceRecommendation.self
         )
+        
         print("Title: \(placeInfo.content)")
         
         takeGeneratedRecommendationAndMakeMapItem(placeInfo: placeInfo.content.title)
-    
+        
     }
-  
+    
     func takeGeneratedRecommendationAndMakeMapItem(placeInfo: String) {
         getCoordinate(addressString: placeInfo) { coordinates, Error in
           //  search(for: placeInfo, coordinates: (coordinates)) //maybe use enum
@@ -373,18 +439,60 @@ struct MapView: View {
         }
     }
     
+    func centerOnPlace(from recommendation: PlaceRecommendation) {
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = recommendation.title
+        request.region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 42.3317, longitude: -83.0471),
+            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+        )
+
+        Task {
+            let search = MKLocalSearch(request: request)
+            if let response = try? await search.start(),
+               let item = response.mapItems.first {
+                listOfAdventures = [item]
+                currentPlace = item
+                if let coordinate = item.placemark.location?.coordinate {
+                    withAnimation(.easeInOut(duration: 0.8)) {
+                        cameraPosition = .camera(
+                            MapCamera(
+                                centerCoordinate: coordinate,
+                                distance: 980,
+                                heading: 242,
+                                pitch: 60
+                            )
+                        )
+                    }
+                }
+            } else {
+                isShowingNoInternetAlert = true
+            }
+        }
+    }
+
+    func openInMaps(from recommendation: PlaceRecommendation) {
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = recommendation.title
+        request.region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 42.3317, longitude: -83.0471),
+            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+        )
+
+        Task {
+            let search = MKLocalSearch(request: request)
+            if let response = try? await search.start(),
+               let item = response.mapItems.first {
+                item.openInMaps(launchOptions: [
+                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                ])
+            } else {
+                isShowingNoInternetAlert = true
+            }
+        }
+    }
 }
 
 #Preview {
     MapView(listOfAdventures: [])
 }
-
-
-
-
-
-
-
-
-
-

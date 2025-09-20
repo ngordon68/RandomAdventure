@@ -27,5 +27,8 @@ struct LocationResult: LocationResultModel{
 struct PlaceRecommendation {
     var title: String
     var subtitle: String
+//    
+//    @Guide(description: "Address of the recommendation, make the address in the shortest possible format")
+//    var address: String
     var isFavorite: Bool = false
 }
