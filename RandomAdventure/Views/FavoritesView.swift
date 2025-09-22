@@ -48,11 +48,23 @@ struct FavoritesView: View {
                                                     Text(favorite.title)
                                                         .font(.headline)
                                                         .lineLimit(2)
+                                                        .padding()
+                                                    
+                                                   // Spacer()
                                                     
                                                     Text(favorite.subtitle)
                                                         .font(.caption)
                                                         .foregroundStyle(.secondary)
                                                         .lineLimit(3)
+                                                      //  .padding()
+                                                    
+                                                    Button {
+                                                       // centerOnPlace(from: place)
+                                                    } label: {
+                                                        Label("Show on Map", systemImage: "map")
+                                                            .font(.caption)
+                                                    }
+                                                    .buttonStyle(.bordered)
                                                   
                                                     
                                                 }

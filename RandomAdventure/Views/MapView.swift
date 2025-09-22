@@ -5,19 +5,12 @@
 //  Created by Nick Gordon on 11/10/24.
 //
 import SwiftUI
-
-import SwiftUI
 import MapKit
 import FoundationModels
-
-extension PlaceRecommendation: Identifiable {
-    public var id: String { "\(title)|\(subtitle)" }
-}
 
 struct MapView: View {
     @AppStorage("lastRecommendationDate") private var lastRecommendationDate: Double = 0
     @Environment(\.scenePhase) private var scenePhase
-
     @State private var locationSearchServices = LocationSearchServices()
     @StateObject private var locationManager = LocationManager()
     @Environment(\.dismissSearch) var dismissSearch
@@ -32,24 +25,6 @@ struct MapView: View {
     @State private var isShowingFavoritesSheet: Bool = false
     @State private var userFavorites: [LocationResult] = []
     @State private var placeRecommendations: [PlaceRecommendation] = []
-    
-    private func isNewDaySinceLastRecommendation() -> Bool {
-        let last = Date(timeIntervalSince1970: lastRecommendationDate)
-        return !Calendar.current.isDateInToday(last)
-    }
-
-    private func generateAndSaveRecommendationIfNeeded() async {
-        guard isNewDaySinceLastRecommendation() else { return }
-        do {
-            try await generateRecommendations()
-            lastRecommendationDate = Date().timeIntervalSince1970
-        } catch {
-            // Optionally handle/log the error
-        }
-    }
-    
-    var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
-    
     @State var cameraPosition: MapCameraPosition = .camera(
         MapCamera(
             centerCoordinate: CLLocationCoordinate2D(latitude: 42.3317, longitude: -83.0471),
@@ -58,13 +33,11 @@ struct MapView: View {
             pitch: 60
         )
     )
-    
+    var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
     let columns = [
         GridItem(.fixed(100)),
         GridItem(.flexible()),
     ]
-    
-    
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
@@ -169,7 +142,7 @@ struct MapView: View {
                                     .foregroundStyle(Color(.secondary))
                                     .opacity(0)
                                     .overlay {
-                                        Text("Your AI picks are waiting! Just favorite a few spots to unlock personalized suggestions")
+                                        Text("Just favorite a few spots to unlock personalized suggestions")
                                             .font(.title)
                                     }
                             } else {
@@ -190,7 +163,7 @@ struct MapView: View {
                                                             
                                                             Text(place.subtitle)
                                                                 .font(.caption)
-                                                                .foregroundStyle(.secondary)
+                                                               // .foregroundStyle(.secondary)
                                                                 .lineLimit(3)
                                                             
                                                             Spacer(minLength: 0)
@@ -404,32 +377,35 @@ struct MapView: View {
     }
     
     func generateRecommendations() async throws  {
-    print("starting recommendations")
-        let instructions = """
-        You are a travel agent with the goal of providing the best experience to the user.
+        
+        if !userFavorites.isEmpty {
+            print("starting recommendations")
+            let instructions = """
+        You are a travel agent with the goal of providing the best hidden gem places to the user.
           When providing a recommendation, include:
           - title: The name of the place
           - subtitle: A short description
         """
-
-      //  let session = LanguageModelSession(instructions: instructions)
-
-//        let placeInfo = try await session.respond(
-//            to: """
-//        Please suggest a place to visit based on one of \(AdventureEnum.allCases) with a similar vibe to the user's favorites \(userFavorites), located in Detroit.
-//        """,
-//           generating: PlaceRecommendation.self
-//        )
-        let session = LanguageModelSession(instructions: instructions)
-        let placeInfo = try await session.respond(
-            to: "Please suggest a place to visit based off one of the following \(AdventureEnum.allCases) that has a similiar vibe to the following items in the list... \(userFavorites) and location of the suggested place based off locations in \(userFavorites).",
-            generating: PlaceRecommendation.self
-        )
-        
-        print("Title: \(placeInfo.content)")
-        
-        takeGeneratedRecommendationAndMakeMapItem(placeInfo: placeInfo.content.title)
-        
+            
+            //  let session = LanguageModelSession(instructions: instructions)
+            
+            //        let placeInfo = try await session.respond(
+            //            to: """
+            //        Please suggest a place to visit based on one of \(AdventureEnum.allCases) with a similar vibe to the user's favorites \(userFavorites), located in Detroit.
+            //        """,
+            //           generating: PlaceRecommendation.self
+            //        )
+            let session = LanguageModelSession(instructions: instructions)
+            let placeInfo = try await session.respond(
+                to: "Please suggest a place to visit that has a similiar vibe to the following items in the list \(userFavorites) and location within 10 miles.",
+                generating: PlaceRecommendation.self
+            )
+            
+            print("Title: \(placeInfo.content)")
+            
+            takeGeneratedRecommendationAndMakeMapItem(placeInfo: placeInfo.content.title)
+            
+        }
     }
     
     func takeGeneratedRecommendationAndMakeMapItem(placeInfo: String) {
@@ -491,8 +467,27 @@ struct MapView: View {
             }
         }
     }
+    private func isNewDaySinceLastRecommendation() -> Bool {
+        let last = Date(timeIntervalSince1970: lastRecommendationDate)
+        return !Calendar.current.isDateInToday(last)
+    }
+
+    private func generateAndSaveRecommendationIfNeeded() async {
+        guard isNewDaySinceLastRecommendation() else { return }
+        do {
+            try await generateRecommendations()
+            lastRecommendationDate = Date().timeIntervalSince1970
+        } catch {
+            // Optionally handle/log the error
+        }
+    }
 }
 
 #Preview {
     MapView(listOfAdventures: [])
 }
+
+extension PlaceRecommendation: Identifiable {
+    public var id: String { "\(title)|\(subtitle)" }
+}
+
