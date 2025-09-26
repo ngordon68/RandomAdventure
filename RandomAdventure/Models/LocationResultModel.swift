@@ -9,14 +9,14 @@ import Foundation
 import FoundationModels
 
 protocol LocationResultModel: Identifiable, Hashable {
-    var id: UUID { get }
+    var id: String { get }
     var title: String { get }
     var subtitle: String { get }
     var isFavorite: Bool { get set }
 }
 
 struct LocationResult: LocationResultModel{
-    var id: UUID = UUID()
+    var id: String = UUID().uuidString
     var title: String
     var subtitle: String
     var isFavorite: Bool = false
@@ -24,7 +24,7 @@ struct LocationResult: LocationResultModel{
 }
 
 @Generable
-struct PlaceRecommendation {
+struct PlaceRecommendation: LocationResultModel {
     var title: String
     var subtitle: String
 //    
@@ -32,3 +32,5 @@ struct PlaceRecommendation {
 //    var address: String
     var isFavorite: Bool = false
 }
+
+

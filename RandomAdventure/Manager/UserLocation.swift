@@ -2,6 +2,8 @@
 import MapKit
 
 @Observable class LocationSearchServices: NSObject {
+    
+   var isShowingSearchbar: Bool = false
 
     var query: String = "" {
         didSet {

@@ -21,7 +21,8 @@ struct AdventureMapView: View {
                 Marker(item: store)
                     .annotationTitles(.visible)
             }
-            .mapItemDetailSelectionAccessory(.sheet)
+           // .mapItemDetailSelectionAccessory(.callout)
+            .mapItemDetailSelectionAccessory(.callout)
           
 
         }
