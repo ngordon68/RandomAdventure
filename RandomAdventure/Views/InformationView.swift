@@ -40,12 +40,8 @@ struct InformationView: View {
                     Text(location.subtitle)
                 }
                 .foregroundStyle(Color(.customText))
-                
-                
             }
-            
         }
-        
         .scrollContentBackground(.hidden)
         
     }
@@ -119,8 +115,6 @@ struct InformationView: View {
         }
     }
     var largeSheetView: some View {
-        
-        
         NavigationStack {
             GeometryReader { geometry in
                 if !isSearchFocused {
@@ -171,7 +165,6 @@ struct InformationView: View {
                                 .padding(.horizontal)
                             
                             if mapkitManager.placeRecommendations.isEmpty {
-                                // Keep your empty state as-is, or use a friendlier card with an icon
                                 Rectangle()
                                     .frame(width: 350, height: 150)
                                     .cornerRadius(15)
@@ -201,9 +194,7 @@ struct InformationView: View {
                                     .padding(.horizontal)
                                 }
                             }
-                            
-                            
-                            //
+
                             Text("Favorites")
                                 .font(.title)
                                 .bold()
@@ -234,11 +225,6 @@ struct InformationView: View {
                 } else {
                     locationResults
                 }
-                
-                
-                
-                
-                
             }
             .searchable(text: $locationSearchServices.query, isPresented: $locationSearchServices.isShowingSearchbar, placement: .navigationBarDrawer, prompt: "Enter City")
             .searchFocused($isSearchFocused)

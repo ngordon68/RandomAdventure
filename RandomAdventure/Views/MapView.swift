@@ -9,17 +9,14 @@ import MapKit
 //import FoundationModels
 
 struct MapView: View {
-    @AppStorage("lastRecommendationDate") private var lastRecommendationDate: Double = 0
-    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) var openURL
+    @State var mapkitManager = MapkitManager(listOfAdventures: [])
     @State var locationSearchServices = LocationSearchServices()
     @StateObject private var locationManager = LocationManager()
-    @Environment(\.openURL) var openURL
     @State private var didPressFavoriteButton: Bool = false
     @State private var favoriteBannerTask: Task<Void, Never>? = nil
     @State var isShowingMapSheet: Bool = true
-    @State var mapkitManager = MapkitManager(listOfAdventures: [])
     @State private var selectedDetent: PresentationDetent = .fraction(0.40)
-
     @State var cameraPosition: MapCameraPosition = .camera(
         MapCamera(
             centerCoordinate: CLLocationCoordinate2D(latitude: 42.3317, longitude: -83.0471),
@@ -87,7 +84,6 @@ struct MapView: View {
                     } label: {
                         Image(systemName: "heart")
                     }
-                    //.sensoryFeedback(.impact(flexibility: .soft, intensity: 0.5), trigger: counter)
                     .sensoryFeedback(.success, trigger: didPressFavoriteButton)
                   
                 }
@@ -117,10 +113,7 @@ struct MapView: View {
             .presentationDragIndicator(.visible)
            .interactiveDismissDisabled()
            .presentationDetents([.fraction(0.40), .large], selection: $selectedDetent)
-            
-
         }
- 
     }
     
     @MainActor

@@ -34,7 +34,6 @@
 		8E83923C2E5F853D005CA222 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				FavoritesView.swift,
 				InformationView.swift,
 			);
 			target = 8E3413402E25614700BA6683 /* RandomAdventureTests */;
