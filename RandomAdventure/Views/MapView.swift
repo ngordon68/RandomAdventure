@@ -176,7 +176,7 @@ struct MapView: View {
     
     @MainActor
     func showFavoriteAnimation() {
-        mapkitManager.addToFavorites()
+       // mapkitManager.addToFavorites()
         favoriteBannerTask?.cancel()
         withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
             didPressFavoriteButton = true

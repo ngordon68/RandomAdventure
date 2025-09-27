@@ -43,6 +43,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8E3413422E25614700BA6683 /* RandomAdventureTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RandomAdventureTests; sourceTree = "<group>"; };
+		8E526EC42E87962A0020AB07 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		8EC0D7B92D00900100051DA3 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 		8EC0D7BB2D00901200051DA3 /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8E83923C2E5F853D005CA222 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
 		8EC0D7BC2D00903200051DA3 /* Manager */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Manager; sourceTree = "<group>"; };
@@ -88,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				8E99120A29D0CF2800BAA8B4 /* RandomAdventureApp.swift */,
+				8E526EC42E87962A0020AB07 /* Extensions */,
 				8EC0D7BC2D00903200051DA3 /* Manager */,
 				8EC0D7BB2D00901200051DA3 /* Views */,
 				8EC0D7B92D00900100051DA3 /* Models */,
@@ -144,6 +146,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				8E526EC42E87962A0020AB07 /* Extensions */,
 				8EC0D7B92D00900100051DA3 /* Models */,
 				8EC0D7BB2D00901200051DA3 /* Views */,
 				8EC0D7BC2D00903200051DA3 /* Manager */,
