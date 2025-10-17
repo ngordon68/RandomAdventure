@@ -7,8 +7,12 @@
 
 import SwiftUI
 import MapKit
+import SwiftData
 
 struct InformationView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var favorites: [LocationResult]
     
     @Bindable var locationSearchServices: LocationSearchServices
     @Bindable var mapkitManager: MapkitManager
@@ -17,6 +21,8 @@ struct InformationView: View {
     @Binding var cameraPosition: MapCameraPosition
     
     @Binding var selectedDetent: PresentationDetent
+    @Query var userFavorites: [LocationResult]
+    var storeKitManager = StoreKitManager()
     var body: some View {
         
         switch selectedDetent {
@@ -24,6 +30,7 @@ struct InformationView: View {
             smallSheetView
         case .large:
             largeSheetView
+                .task { await storeKitManager.fetchTips() }
         default:
             EmptyView()
         }
@@ -158,43 +165,43 @@ struct InformationView: View {
                                 
                                 Spacer()
                             }
-                            Text("You may also like")
-                                .font(.title)
-                                .bold()
-                                .opacity(mapkitManager.placeRecommendations.isEmpty ? 0 : 1)
-                                .padding(.horizontal)
+                            //                            Text("You may also like")
+                            //                                .font(.title)
+                            //                                .bold()
+                            //                                .opacity(mapkitManager.placeRecommendations.isEmpty ? 0 : 1)
+                            //                                .padding(.horizontal)
+                            //                            
+                            //                            if mapkitManager.placeRecommendations.isEmpty {
+                            //                                Rectangle()
+                            //                                    .frame(width: 350, height: 150)
+                            //                                    .cornerRadius(15)
+                            //                                    .foregroundStyle(Color(.secondary))
+                            //                                    .opacity(0)
+                            //                                    .overlay {
+                            //                                        Text("Just favorite a few spots to unlock personalized suggestions")
+                            //                                            .font(.title)
+                            //                                    }
+                            //                            } else {
+                            //                                ScrollView(.horizontal, showsIndicators: false) {
+                            //                                    HStack(spacing: 12) {
+                            //                                        ForEach(mapkitManager.placeRecommendations, id: \.id) { place in
+                            //                                            PlaceCard(
+                            //                                                title: place.title,
+                            //                                                subtitle: place.subtitle,
+                            //                                                onPrimaryAction: {
+                            //                                                    selectedDetent = .fraction(0.40)
+                            //                                                    centerOnPlace(from: place)
+                            //                                                },
+                            //                                                onAccessoryAction: {
+                            //                                                    mapkitManager.placeRecommendations.removeAll { $0.title == place.title }
+                            //                                                }
+                            //                                            )
+                            //                                        }
+                            //                                    }
+                            //                                    .padding(.horizontal)
+                            //                                }
+                            //                            }
                             
-                            if mapkitManager.placeRecommendations.isEmpty {
-                                Rectangle()
-                                    .frame(width: 350, height: 150)
-                                    .cornerRadius(15)
-                                    .foregroundStyle(Color(.secondary))
-                                    .opacity(0)
-                                    .overlay {
-                                        Text("Just favorite a few spots to unlock personalized suggestions")
-                                            .font(.title)
-                                    }
-                            } else {
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 12) {
-                                        ForEach(mapkitManager.placeRecommendations, id: \.id) { place in
-                                            PlaceCard(
-                                                title: place.title,
-                                                subtitle: place.subtitle,
-                                                onPrimaryAction: {
-                                                    selectedDetent = .fraction(0.40)
-                                                    centerOnPlace(from: place)
-                                                },
-                                                onAccessoryAction: {
-                                                    mapkitManager.placeRecommendations.removeAll { $0.title == place.title }
-                                                }
-                                            )
-                                        }
-                                    }
-                                    .padding(.horizontal)
-                                }
-                            }
-
                             Text("Favorites")
                                 .font(.title)
                                 .bold()
@@ -202,7 +209,7 @@ struct InformationView: View {
                             
                             ScrollView(.horizontal) {
                                 HStack {
-                                    ForEach(mapkitManager.userFavorites) { favorite in
+                                    ForEach(favorites) { favorite in
                                         PlaceCard(
                                             title: favorite.title,
                                             subtitle: favorite.subtitle,
@@ -211,14 +218,51 @@ struct InformationView: View {
                                                 centerOnPlace(from: favorite)
                                             },
                                             onAccessoryAction: {
-                                                mapkitManager.userFavorites.removeAll { $0.title == favorite.title }
+                                               // mapkitManager.userFavorites.removeAll { $0.title == favorite.title }
+                                                modelContext.delete(favorite)
+                                                
                                             }
                                         )
                                     }
                                 }
                             }
                             
-                            
+                            ForEach(storeKitManager.tipProducts, id: \.id) { product in
+                                Button(action: {
+                                    Task { await storeKitManager.purchase(product) }
+                                }) {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: "heart.fill")
+                                            .imageScale(.medium)
+                                        //.foregroundStyle(Color.customText)
+                                            .shadow(color: .black.opacity(0.2), radius: 1, x: 0, y: 1)
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text("Support a local developer with a tip")
+                                                .font(.headline) 
+                                            Text(product.displayPrice.isEmpty ? "$0.99" : product.displayPrice)
+                                                .font(.subheadline)
+                                        }
+                                        Spacer(minLength: 0)
+                                    }
+                                    .padding(.vertical, 14)
+                                    .padding(.horizontal, 16)
+                                    .background (
+                                        Color(.primary)                                    )
+                                    //                                    .background(
+                                    //                                        LinearGradient(colors: [Color.customText, Color.red], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    //                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                            .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                                    )
+                                    .shadow(color: .black.opacity(0.18), radius: 8, x: 0, y: 6)
+                                    .padding(.horizontal)
+                                }
+                                .buttonStyle(.plain)
+                                .padding(.top, 8)
+                            }
                         }
                         
                     }
@@ -239,10 +283,7 @@ struct InformationView: View {
                 
             }
         }
-        
-        
     }
-    
     
     func centerOnPlace(from recommendation: any LocationResultModel) {
         let request = MKLocalSearch.Request()
@@ -279,7 +320,11 @@ struct InformationView: View {
 }
 
 #Preview {
-    InformationView( locationSearchServices: LocationSearchServices(), mapkitManager: MapkitManager(listOfAdventures: []), cameraPosition: .constant(.automatic), selectedDetent: .constant(.large))
+    
+    InformationView(
+        locationSearchServices: LocationSearchServices(),
+        mapkitManager: MapkitManager(listOfAdventures: []),
+        cameraPosition: .constant(.automatic),
+        selectedDetent: .constant(.large)
+    )
 }
-
-

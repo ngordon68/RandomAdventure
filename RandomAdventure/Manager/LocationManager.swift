@@ -54,7 +54,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObje
     }
     
     
-    
     func requestWhenInUseAuthorization() {
         manager.requestWhenInUseAuthorization()
     }

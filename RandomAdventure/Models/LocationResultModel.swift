@@ -7,6 +7,7 @@
 
 import Foundation
 import FoundationModels
+import SwiftData
 
 protocol LocationResultModel: Identifiable, Hashable {
     var id: String { get }
@@ -15,11 +16,19 @@ protocol LocationResultModel: Identifiable, Hashable {
     var isFavorite: Bool { get set }
 }
 
-struct LocationResult: LocationResultModel{
+@Model
+class LocationResult: LocationResultModel{
     var id: String = UUID().uuidString
     var title: String
     var subtitle: String
     var isFavorite: Bool = false
+
+    init(id: String = UUID().uuidString, title: String, subtitle: String, isFavorite: Bool = false) {
+        self.id = id
+        self.title = title
+        self.subtitle = subtitle
+        self.isFavorite = isFavorite
+    }
     
 }
 
@@ -32,5 +41,4 @@ struct PlaceRecommendation: LocationResultModel {
 //    var address: String
     var isFavorite: Bool = false
 }
-
 

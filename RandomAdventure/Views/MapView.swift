@@ -9,6 +9,7 @@ import MapKit
 //import FoundationModels
 
 struct MapView: View {
+    @Environment (\.modelContext) var context
     @Environment(\.openURL) var openURL
     @State var mapkitManager = MapkitManager(listOfAdventures: [])
     @State var locationSearchServices = LocationSearchServices()
@@ -17,6 +18,8 @@ struct MapView: View {
     @State private var favoriteBannerTask: Task<Void, Never>? = nil
     @State var isShowingMapSheet: Bool = true
     @State private var selectedDetent: PresentationDetent = .fraction(0.40)
+    @State private var lookAroundScene: MKLookAroundScene?
+    @State private var isShowingLookAroundScene: Bool = false
     @State var cameraPosition: MapCameraPosition = .camera(
         MapCamera(
             centerCoordinate: CLLocationCoordinate2D(latitude: 42.3317, longitude: -83.0471),
@@ -25,6 +28,8 @@ struct MapView: View {
             pitch: 60
         )
     )
+    
+    
     var mapBounds = MapCameraBounds(minimumDistance: 1000, maximumDistance: 2000)
     let columns = [
         GridItem(.fixed(100)),
@@ -49,47 +54,80 @@ struct MapView: View {
                         pitch: 60
                     )
                 )
+                Task {
+                    await loadPreview(coordinate: coordinate)
+                }
             }
             .overlay(alignment: .top) {
-                if didPressFavoriteButton {
-                    FavoriteAnimationView()
+                VStack {
+                    if didPressFavoriteButton {
+                        FavoriteAnimationView()
+                    }
+                    
+                    if isShowingLookAroundScene {
+                        
+                        if let lookAroundScene {
+                            LookAroundPreview(initialScene: lookAroundScene)
+                                .clipShape(RoundedRectangle(cornerRadius: 25))
+                                .frame(height: 300)
+                                .padding()
+                        } else {
+                            ContentUnavailableView("Look Around Preview not available", systemImage: "mappin.and.ellipse")
+                                .padding(.bottom, 350)
+                        }
+                        
+                    }
+                    
                 }
             }
             .animation(.spring(response: 0.35, dampingFraction: 0.9), value: didPressFavoriteButton)
-
+            
             .toolbar {
-                
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                     //   locationManager.fetchUserLocation()
-
+                        //locationManager.fetchUserLocation()
+                        Task {
+                            //try await loadPreview()
+                        }
+                       
+                        
                     } label: {
                         Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
                     }
-                 
-                    
                 }
-
+                
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
-                ToolbarItem(placement: .topBarTrailing) {
+                
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    
                     Button {
-                        if mapkitManager.addToFavorites() {
-                            showFavoriteAnimation()
-//                            Task {
-//                                try? await  mapkitManager.generateRecommendations()
-//                            }
-                           
-                        }
                       
+                        isShowingLookAroundScene.toggle()
+                    } label: {
+                        Image(systemName: isShowingLookAroundScene ? "binoculars.fill" : "binoculars")
+                    }
+               
+             
+                }
+                
+                
+                
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                   
+                    Button {
+                        if addToFavorites() {
+                            showFavoriteAnimation()
+                            //insert model context here
+                        }
                     } label: {
                         Image(systemName: "heart")
                     }
                     .sensoryFeedback(.success, trigger: didPressFavoriteButton)
-                  
+             
                 }
-
+                
             }
-           
+            
         }
         .alert("Please make sure you are connected to the internet", isPresented:  $mapkitManager.isShowingNoInternetAlert) {
             Button("OK", role: .cancel) {
@@ -103,22 +141,21 @@ struct MapView: View {
             }
             .tint(.primary)
             .foregroundStyle(Color(.secondary))
-            Button("Cancel", role: .cancel) {}
+            Button("Cancel", role: .cancel) { }
                 .tint(.primary)
-            
         }
         .sheet(isPresented: $isShowingMapSheet) {
             InformationView(locationSearchServices: locationSearchServices, mapkitManager: mapkitManager, cameraPosition: $cameraPosition, selectedDetent: $selectedDetent)
-            .presentationBackgroundInteraction(.enabled)
-            .presentationDragIndicator(.visible)
-           .interactiveDismissDisabled()
-           .presentationDetents([.fraction(0.40), .large], selection: $selectedDetent)
+                .presentationBackgroundInteraction(.enabled)
+                .presentationDragIndicator(.visible)
+                .interactiveDismissDisabled()
+                .presentationDetents([.fraction(0.40), .large], selection: $selectedDetent)
         }
     }
     
     @MainActor
     func showFavoriteAnimation() {
-       // mapkitManager.addToFavorites()
+        // mapkitManager.addToFavorites()
         favoriteBannerTask?.cancel()
         withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
             didPressFavoriteButton = true
@@ -128,6 +165,38 @@ struct MapView: View {
             withAnimation(.easeOut(duration: 0.3)) {
                 didPressFavoriteButton = false
             }
+        }
+    }
+    
+    func loadPreview(coordinate: CLLocationCoordinate2D?) async {
+        Task {
+            if let coordinate  {
+                let request = MKLookAroundSceneRequest(coordinate: coordinate)
+                do {
+                    lookAroundScene = try await request.scene
+                } catch (let error) {
+                    print(error)
+                }
+            }
+        }
+    }
+    
+    func addToFavorites() -> Bool {
+        let generator = UINotificationFeedbackGenerator()
+        guard let place =  mapkitManager.currentPlace?.placemark else { return false }
+         let verifiedTitle = place.name ?? "Unknown Place"
+         let verifiedSubtitle = place.subtitle ?? ""
+         let newItem = LocationResult(title: verifiedTitle, subtitle: verifiedSubtitle, isFavorite: true)
+        
+        if mapkitManager.userFavorites.contains(where: { $0.title == verifiedTitle }) {
+            print("item already exist")
+            return false
+        } else {
+            mapkitManager.userFavorites.append(newItem)
+            context.insert(newItem)
+            
+            generator.notificationOccurred(.success)
+            return true
         }
     }
 }

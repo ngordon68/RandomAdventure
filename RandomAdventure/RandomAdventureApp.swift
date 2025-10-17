@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct RandomAdventureApp: App {
@@ -14,5 +15,6 @@ struct RandomAdventureApp: App {
             MapView()
          
         }
+        .modelContainer(for: LocationResult.self)
     }
 }

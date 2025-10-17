@@ -10,27 +10,19 @@ import MapKit
 import CoreLocation
 import Observation
 import FoundationModels
+import SwiftData
 
 @MainActor
 @Observable
 class MapkitManager {
-    
+
     var listOfAdventures: [MKMapItem]
     var selection: MKMapItem?
     var currentPlace: MKMapItem?
-    var  isShowingNoInternetAlert: Bool = false
+    var isShowingNoInternetAlert: Bool = false
     var userFavorites: [LocationResult] = []
-    var placeRecommendations: [PlaceRecommendation] = [
-PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goes on and on my friend"),
-PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goes on and on my friend"),
-PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goes on and on my friend"),
-PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goes on and on my friend"),
-PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goes on and on my friend")
-    ]
-    
+    var placeRecommendations: [PlaceRecommendation] = [ ]
     var searchCategory:AdventureEnum = .food
-    
-    
     
     init(listOfAdventures: [MKMapItem]) {
         self.listOfAdventures = listOfAdventures
@@ -67,11 +59,8 @@ PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goe
                     }
                     
                 } else {
-                    isShowingNoInternetAlert = true
+                  //  isShowingNoInternetAlert = true
                 }
-            
-            
-        
         }
     }
     
@@ -91,25 +80,6 @@ PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goe
             completionHandler(kCLLocationCoordinate2DInvalid, error as NSError?)
         }
     }
-    
-    func addToFavorites() -> Bool {
-        let generator = UINotificationFeedbackGenerator()
-        guard let place =  currentPlace?.placemark else { return false }
-         let verifiedTitle = place.name ?? "Unknown Place"
-         let verifiedSubtitle = place.subtitle ?? ""
-         let newItem = LocationResult(title: verifiedTitle, subtitle: verifiedSubtitle, isFavorite: true)
-        
-        if userFavorites.contains(where: { $0.title == verifiedTitle }) {
-            print("item already exist")
-            return false
-        } else {
-            userFavorites.append(newItem)
-            generator.notificationOccurred(.success)
-            return true
-        }
-    }
-    
-    
     
     func generateRecommendations() async throws  {
         
@@ -149,8 +119,5 @@ PlaceRecommendation(title: "This is the song that never ends", subtitle: "it goe
             self.search( coordinates: (coordinates), generatedPlaceName: placeInfo)
         }
     }
-    
-    
-    
 }
 
