@@ -9,7 +9,7 @@ import MapKit
 //import FoundationModels
 
 struct MapView: View {
-    @Environment (\.modelContext) var context
+    @Environment(\.modelContext) var context
     @Environment(\.openURL) var openURL
     @State var mapkitManager = MapkitManager(listOfAdventures: [])
     @State var locationSearchServices = LocationSearchServices()
@@ -37,97 +37,117 @@ struct MapView: View {
     ]
     var body: some View {
         NavigationStack {
-            AdventureMapView(
-                cameraPosition: $cameraPosition,
-                bounds: mapBounds,
-                adventures: mapkitManager.listOfAdventures,
-                selection: $mapkitManager.selection
-            )
-            .animation(.smooth(duration: 0.8), value: cameraPosition)
-            .onChange(of: mapkitManager.currentPlace) { _, selection in
-                guard let coordinate = selection?.placemark.coordinate else { return }
-                cameraPosition = .camera(
-                    MapCamera(
-                        centerCoordinate: coordinate,
-                        distance: 980,
-                        heading: 242,
-                        pitch: 60
-                    )
+        GeometryReader { geometry in
+                AdventureMapView(
+                    cameraPosition: $cameraPosition,
+                    bounds: mapBounds,
+                    adventures: mapkitManager.listOfAdventures,
+                    selection: $mapkitManager.selection
                 )
-                Task {
-                    await loadPreview(coordinate: coordinate)
-                }
-            }
-            .overlay(alignment: .top) {
-                VStack {
-                    if didPressFavoriteButton {
-                        FavoriteAnimationView()
+                .animation(.smooth(duration: 0.8), value: cameraPosition)
+                .onChange(of: mapkitManager.currentPlace) { _, selection in
+                    guard let coordinate = selection?.placemark.coordinate else { return }
+                    cameraPosition = .camera(
+                        MapCamera(
+                            centerCoordinate: coordinate,
+                            distance: 980,
+                            heading: 242,
+                            pitch: 60
+                        )
+                    )
+                    Task {
+                        await loadPreview(coordinate: coordinate)
                     }
-                    
-                    if isShowingLookAroundScene {
-                        
-                        if let lookAroundScene {
-                            LookAroundPreview(initialScene: lookAroundScene)
-                                .clipShape(RoundedRectangle(cornerRadius: 25))
-                                .frame(height: 300)
-                                .padding()
-                        } else {
-                            ContentUnavailableView("Look Around Preview not available", systemImage: "mappin.and.ellipse")
-                                .padding(.bottom, 350)
+                }
+                .overlay(alignment: .top) {
+                    VStack {
+                        if didPressFavoriteButton {
+                            FavoriteAnimationView(isFavorite: true)
+                        }
+                        if isShowingLookAroundScene {
+                            
+                            if let lookAroundScene {
+                                LookAroundPreview(initialScene: lookAroundScene)
+                                    .clipShape(RoundedRectangle(cornerRadius: 25))
+                                    .frame(height: geometry.size.height * 0.3)
+                                    .padding()
+                            } else {
+                                
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color(.systemGray6)) // light background like ContentUnavailableView
+                                    .frame(height: geometry.size.height * 0.3)
+                                    .shadow(radius: 1) // subtle depth
+                                    .overlay {
+                                        VStack {
+                                            Image(systemName: "mappin.and.ellipse")
+                                                .font(.system(size: 40))
+                                                .foregroundStyle(.gray)
+                                                .padding(.bottom, 4)
+                                            
+                                            Text("Look Around Preview not available")
+                                                .font(.headline)
+                                                .multilineTextAlignment(.center)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .padding()
+                                    }
+                                    .padding()
+                                
+                            }
+                            
                         }
                         
                     }
-                    
                 }
-            }
-            .animation(.spring(response: 0.35, dampingFraction: 0.9), value: didPressFavoriteButton)
-            
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        //locationManager.fetchUserLocation()
-                        Task {
-                            //try await loadPreview()
+                .animation(.spring(response: 0.35, dampingFraction: 0.9), value: didPressFavoriteButton)
+                
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            //locationManager.fetchUserLocation()
+                            Task {
+                                //try await loadPreview()
+                            }
+                            
+                            
+                        } label: {
+                            Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
                         }
-                       
+                    }
+                    
+                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                    
+                    ToolbarItemGroup(placement: .topBarTrailing) {
                         
-                    } label: {
-                        Image(systemName: locationManager.isAuthorizedForLocation ?  "location" : "location.slash")
-                    }
-                }
-                
-                DefaultToolbarItem(kind: .search, placement: .bottomBar)
-                
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    
-                    Button {
-                      
-                        isShowingLookAroundScene.toggle()
-                    } label: {
-                        Image(systemName: isShowingLookAroundScene ? "binoculars.fill" : "binoculars")
-                    }
-               
-             
-                }
-                
-                
-                
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                   
-                    Button {
-                        if addToFavorites() {
-                            showFavoriteAnimation()
-                            //insert model context here
+                        Button {
+                            
+                            isShowingLookAroundScene.toggle()
+                        } label: {
+                            Image(systemName: isShowingLookAroundScene ? "binoculars.fill" : "binoculars")
                         }
-                    } label: {
-                        Image(systemName: "heart")
+                        
+                        
                     }
-                    .sensoryFeedback(.success, trigger: didPressFavoriteButton)
-             
+                    
+                    
+                    
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        
+                        Button {
+                            if addToFavorites() {
+                                showFavoriteAnimation()
+                                //insert model context here
+                            }
+                        } label: {
+                            Image(systemName: "heart")
+                        }
+                        .sensoryFeedback(.success, trigger: didPressFavoriteButton)
+                        
+                    }
+                    
                 }
                 
             }
-            
         }
         .alert("Please make sure you are connected to the internet", isPresented:  $mapkitManager.isShowingNoInternetAlert) {
             Button("OK", role: .cancel) {

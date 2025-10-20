@@ -143,8 +143,7 @@ struct InformationView: View {
                                     }
                                 }
                                 .backgroundStyle(Color(.primary))
-                                
-                                
+                            
                                 Button {
                                     mapkitManager.getCoordinate(addressString: locationSearchServices.query) { coordinates, Error in
                                         mapkitManager.search(for:  mapkitManager.searchCategory.rawValue, coordinates: (coordinates))
@@ -205,7 +204,7 @@ struct InformationView: View {
                             Text("Favorites")
                                 .font(.title)
                                 .bold()
-                                .padding(.horizontal)
+                                .padding()
                             
                             ScrollView(.horizontal) {
                                 HStack {
@@ -218,7 +217,6 @@ struct InformationView: View {
                                                 centerOnPlace(from: favorite)
                                             },
                                             onAccessoryAction: {
-                                               // mapkitManager.userFavorites.removeAll { $0.title == favorite.title }
                                                 modelContext.delete(favorite)
                                                 
                                             }
@@ -234,7 +232,6 @@ struct InformationView: View {
                                     HStack(spacing: 12) {
                                         Image(systemName: "heart.fill")
                                             .imageScale(.medium)
-                                        //.foregroundStyle(Color.customText)
                                             .shadow(color: .black.opacity(0.2), radius: 1, x: 0, y: 1)
                                         
                                         VStack(alignment: .leading, spacing: 2) {
@@ -247,11 +244,13 @@ struct InformationView: View {
                                     }
                                     .padding(.vertical, 14)
                                     .padding(.horizontal, 16)
-                                    .background (
-                                        Color(.primary)                                    )
-                                    //                                    .background(
-                                    //                                        LinearGradient(colors: [Color.customText, Color.red], startPoint: .topLeading, endPoint: .bottomTrailing)
-                                    //                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .stroke(Color(.customText).opacity(0.7), lineWidth: 5)
+                                    )
+                                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 3)
+                                    .background (Color(.primary))
+                                    
                                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -259,6 +258,7 @@ struct InformationView: View {
                                     )
                                     .shadow(color: .black.opacity(0.18), radius: 8, x: 0, y: 6)
                                     .padding(.horizontal)
+                                    
                                 }
                                 .buttonStyle(.plain)
                                 .padding(.top, 8)

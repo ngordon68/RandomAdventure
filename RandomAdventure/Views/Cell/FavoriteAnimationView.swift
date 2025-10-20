@@ -9,15 +9,16 @@ import SwiftUI
 
 struct FavoriteAnimationView: View {
  
-    
+    var isFavorite: Bool
     var body: some View {
+        
         HStack(spacing: 10) {
-                      Image(systemName: "heart.fill")
+            Image(systemName: isFavorite ?  "heart.fill" : "heart.slash.fill" )
                           .font(.title3)
                           .foregroundStyle(.white)
                           .symbolEffect(.bounce, options: .repeat(1)) 
 
-                      Text("Added to Favorites")
+            Text( isFavorite ?  "Added to Favorites" : "Already in Favorites")
                           .font(.headline)
                           .bold()
                           .foregroundStyle(.white)
@@ -44,5 +45,6 @@ struct FavoriteAnimationView: View {
 }
     
 #Preview {
-    FavoriteAnimationView()
+    FavoriteAnimationView(isFavorite: true)
+    FavoriteAnimationView(isFavorite: false)
 }

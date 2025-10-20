@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E0EA50A2EA3605D00CE0DCA /* RandomAdventureGlass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8E0EA5092EA3605D00CE0DCA /* RandomAdventureGlass.icon */; };
 		8E99120B29D0CF2800BAA8B4 /* RandomAdventureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E99120A29D0CF2800BAA8B4 /* RandomAdventureApp.swift */; };
 		8E99120F29D0CF2900BAA8B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E99120E29D0CF2900BAA8B4 /* Assets.xcassets */; };
 		8E99121229D0CF2900BAA8B4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E99121129D0CF2900BAA8B4 /* Preview Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8E0EA5092EA3605D00CE0DCA /* RandomAdventureGlass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = RandomAdventureGlass.icon; sourceTree = "<group>"; };
 		8E3413412E25614700BA6683 /* RandomAdventureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RandomAdventureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E99120729D0CF2800BAA8B4 /* RandomAdventure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RandomAdventure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E99120A29D0CF2800BAA8B4 /* RandomAdventureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomAdventureApp.swift; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 				8E3413422E25614700BA6683 /* RandomAdventureTests */,
 				8EC0CC892EA1D2C3005E8217 /* Frameworks */,
 				8E99120829D0CF2800BAA8B4 /* Products */,
+				8E0EA5092EA3605D00CE0DCA /* RandomAdventureGlass.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -218,6 +221,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E99121229D0CF2900BAA8B4 /* Preview Assets.xcassets in Resources */,
+				8E0EA50A2EA3605D00CE0DCA /* RandomAdventureGlass.icon in Resources */,
 				8E99120F29D0CF2900BAA8B4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -418,7 +422,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"RandomAdventure/Preview Content\"";
 				DEVELOPMENT_TEAM = 6FP5LT63NT;
 				ENABLE_PREVIEWS = YES;
@@ -435,12 +439,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = co.RandomAdventure.RandomAdventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -453,7 +458,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"RandomAdventure/Preview Content\"";
 				DEVELOPMENT_TEAM = 6FP5LT63NT;
 				ENABLE_PREVIEWS = YES;
@@ -470,12 +475,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = co.RandomAdventure.RandomAdventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
