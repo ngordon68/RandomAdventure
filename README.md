@@ -84,6 +84,9 @@ An app that generate a random adventure when the user types in a city and select
   <td>
   <tr>
    <table>   
+
+   # LICENSED APPLICATION END USER LICENSE AGREEMENT
+   https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
     
  # Privacy Policy
     
